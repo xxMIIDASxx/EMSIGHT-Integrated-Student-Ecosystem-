@@ -92,7 +92,7 @@ function StudentDashboard({ activeTab, demoUser }) {
             border: '3px solid rgba(16,185,129,0.3)', flexShrink: 0
           }}>
             <img 
-              src={demoUser?.profile_picture ? (demoUser.profile_picture.startsWith('http') ? demoUser.profile_picture : `http://127.0.0.1:8000${demoUser.profile_picture}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${demoUser?.first_name || 'Student'}&top=${demoUser?.gender === 'F' ? 'longHair,bob,curly' : 'shortFlat,shortRound,sides'}&mouth=smile&eyebrows=default&eyes=default`} 
+              src={demoUser?.profile_picture ? (demoUser.profile_picture.startsWith('http') ? demoUser.profile_picture : `${import.meta.env.PROD ? '' : 'http://127.0.0.1:8000'}${demoUser.profile_picture}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${demoUser?.first_name || 'Student'}&top=${demoUser?.gender === 'F' ? 'longHair,bob,curly' : 'shortFlat,shortRound,sides'}&mouth=smile&eyebrows=default&eyes=default`}
               alt="Profile" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
               onError={(e) => {

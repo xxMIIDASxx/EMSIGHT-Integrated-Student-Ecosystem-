@@ -58,7 +58,7 @@ function Sidebar({ user, currentRole, activeTab, setActiveTab, currentPlatform, 
   const getProfilePicUrl = (url) => {
     if (!url) return null;
     if (url.startsWith('http')) return url;
-    return `http://127.0.0.1:8000${url}`;
+    return `${import.meta.env.PROD ? '' : 'http://127.0.0.1:8000'}${url}`;
   };
 
   return (

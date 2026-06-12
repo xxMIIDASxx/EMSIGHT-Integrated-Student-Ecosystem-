@@ -194,7 +194,7 @@ function AdminDashboard({ activeTab, demoUser }) {
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <div style={{ width: '120px', height: '120px', borderRadius: '50%', backgroundColor: 'rgba(16,185,129,0.1)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid rgba(16,185,129,0.3)', flexShrink: 0 }}>
             <img 
-              src={demoUser?.profile_picture ? (demoUser.profile_picture.startsWith('http') ? demoUser.profile_picture : `http://127.0.0.1:8000${demoUser.profile_picture}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${demoUser?.first_name || 'Admin'}&top=${demoUser?.gender === 'F' ? 'longHair,bob,curly' : 'shortFlat,shortRound,sides'}&mouth=smile&eyebrows=default&eyes=default`} 
+              src={demoUser?.profile_picture ? (demoUser.profile_picture.startsWith('http') ? demoUser.profile_picture : `${import.meta.env.PROD ? '' : 'http://127.0.0.1:8000'}${demoUser.profile_picture}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${demoUser?.first_name || 'Admin'}&top=${demoUser?.gender === 'F' ? 'longHair,bob,curly' : 'shortFlat,shortRound,sides'}&mouth=smile&eyebrows=default&eyes=default`} 
               alt="Profile" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
               onError={(e) => {

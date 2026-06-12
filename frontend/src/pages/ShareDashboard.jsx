@@ -171,7 +171,7 @@ function ShareDashboard({ activeTab, demoUser }) {
                   </p>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", minWidth: "170px" }}>
-                  <a className="btn btn-secondary" href={r.file.startsWith("http") ? r.file : `http://127.0.0.1:8000${r.file}`} target="_blank" rel="noreferrer">Read</a>
+                  <a className="btn btn-secondary" href={r.file.startsWith("http") ? r.file : `${import.meta.env.PROD ? '' : 'http://127.0.0.1:8000'}${r.file}`} target="_blank" rel="noreferrer">Read</a>
                   <button className="btn btn-secondary" onClick={() => handleFavorite(r.id)} style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
                     <Bookmark size={14} /> {r.is_favorited ? "Remove from list" : "Add to list"}
                   </button>
