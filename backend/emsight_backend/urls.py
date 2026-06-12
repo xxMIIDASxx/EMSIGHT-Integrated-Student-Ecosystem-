@@ -19,14 +19,28 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.core.management import call_command
+from django.http import HttpResponse
+
+def run_migrations(request):
+    try:
+        call_command('migrate')
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        if not User.objects.filter(username='admin').exists():
+            User.objects.create_superuser('admin', 'admin@example.com', 'admin')
+        return HttpResponse("SUCCESS! Database migrated and 'admin' user created.")
+    except Exception as e:
+        return HttpResponse(f"ERROR: {e}")
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/accounts/', include('accounts.urls')),
     path('api/portal/', include('portal.urls')),
     path('api/community/', include('community.urls')),
     path('api/share/', include('share.urls')),
+    path('api/run-migrations/', run_migrations),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
