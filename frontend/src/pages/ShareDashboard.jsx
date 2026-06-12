@@ -13,6 +13,7 @@ function ShareDashboard({ activeTab, demoUser }) {
   const [query, setQuery] = useState("");
   const [resourceTypeFilter, setResourceTypeFilter] = useState("");
   const [reportReason, setReportReason] = useState({});
+  const [expandedVerified, setExpandedVerified] = useState(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -152,25 +153,32 @@ function ShareDashboard({ activeTab, demoUser }) {
         <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
           {visibleResources.map((r) => (
             <div key={r.id} style={{ border: "1px solid var(--border)", background: "var(--background)", borderRadius: "var(--radius-md)", padding: "1rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
-                <div>
-                  <h3 style={{ marginBottom: "0.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <FileText size={18} /> {r.title}
+              <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
+                <div style={{ flex: "1 1 200px" }}>
+                  <h3 style={{ marginBottom: "0.25rem", display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                    <FileText size={18} style={{ flexShrink: 0 }} /> 
+                    <span style={{ wordBreak: 'break-word' }}>{r.title}</span>
                     {r.validators_detail?.length > 0 && (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: '#1d4ed8', fontSize: '0.85rem', fontWeight: 600, background: '#dbeafe', padding: '0.25rem 0.5rem', borderRadius: '20px' }}>
+                      <span 
+                        className={`verifier-badge ${expandedVerified === r.id ? 'expanded' : ''}`}
+                        onClick={() => setExpandedVerified(expandedVerified === r.id ? null : r.id)}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: '#1d4ed8', fontSize: '0.85rem', fontWeight: 600, background: '#dbeafe', padding: '0.25rem 0.5rem', borderRadius: '20px', cursor: 'pointer', transition: 'all 0.2s ease', flexShrink: 0 }}
+                      >
                         <BadgeCheck size={16} fill="#1d4ed8" color="white" />
-                        (verified by: {r.validators_detail.map(v => `${v.first_name} ${v.last_name}`).join(', ')})
+                        <span className="verifier-text" style={{ transition: 'all 0.2s ease', whiteSpace: 'nowrap' }}>
+                          (verified by: {r.validators_detail.map(v => `${v.first_name} ${v.last_name}`).join(', ')})
+                        </span>
                       </span>
                     )}
                   </h3>
-                  <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                  <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", wordBreak: 'break-word' }}>
                     Subject: <strong>{r.subject}</strong> · Type: {RESOURCE_TYPES.find((t) => t.value === r.resource_type)?.label || r.resource_type}
                   </p>
                   <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
                     By {r.author_detail?.first_name} {r.author_detail?.last_name} ({r.author_detail?.role}) · Reports: {r.report_count}
                   </p>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", minWidth: "170px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", flex: "1 1 150px" }}>
                   <a className="btn btn-secondary" href={r.file.startsWith("http") ? r.file : `${import.meta.env.PROD ? '' : 'http://127.0.0.1:8000'}${r.file}`} target="_blank" rel="noreferrer">Read</a>
                   <button className="btn btn-secondary" onClick={() => handleFavorite(r.id)} style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
                     <Bookmark size={14} /> {r.is_favorited ? "Remove from list" : "Add to list"}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Moon, Sun } from 'lucide-react';
 import TopBar from './components/TopBar';
 import Sidebar from './components/Sidebar';
 import StudentDashboard from './pages/StudentDashboard';
@@ -18,12 +19,19 @@ function App() {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
+  const [isAnimatingTheme, setIsAnimatingTheme] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  const toggleTheme = () => {
+    setIsAnimatingTheme(true);
+    setTheme(theme === 'light' ? 'dark' : 'light');
+    setTimeout(() => setIsAnimatingTheme(false), 500);
+  };
 
   const handleLogin = (userData) => {
     localStorage.setItem('user', JSON.stringify(userData));
@@ -40,11 +48,14 @@ function App() {
       <div className="app-container" style={{ paddingTop: 0 }}>
         <div style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 100 }}>
           <button 
-            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} 
-            className="role-btn" 
-            style={{ padding: '0.4rem', borderRadius: '50%', background: 'var(--surface)' }}
+            onClick={toggleTheme} 
+            className="role-btn theme-btn" 
+            style={{ padding: '0.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: 'var(--surface)', border: '1px solid var(--border)', cursor: 'pointer' }}
+            title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
           >
-            {theme === 'light' ? 'Dark' : 'Light'}
+            <div className={isAnimatingTheme ? 'spin-animation' : ''} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '18px', height: '18px' }}>
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </div>
           </button>
         </div>
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>

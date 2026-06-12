@@ -118,7 +118,7 @@ function TopBar({ user, onLogout, theme, setTheme, currentPlatform, setCurrentPl
       
       <div className="platform-switcher" style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
         {user && setCurrentPlatform && (
-          <div style={{ display: 'flex', position: 'relative', background: 'var(--surface-hover)', borderRadius: 'var(--radius-full)', padding: '0.25rem', minWidth: '300px' }}>
+          <div style={{ display: 'flex', position: 'relative', background: 'var(--surface-hover)', borderRadius: 'var(--radius-full)', padding: '0.25rem', width: '100%', maxWidth: '360px' }}>
             <div 
               style={{
                 position: 'absolute',
