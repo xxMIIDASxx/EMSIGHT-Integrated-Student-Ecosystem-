@@ -341,7 +341,7 @@ function CommunityDashboard({ activeTab, demoUser }) {
               <label className="input-label">Event Title</label>
               <input type="text" required className="input-field" value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="responsive-grid-2">
               <div className="input-group">
                 <label className="input-label">Date and Time</label>
                 <input type="datetime-local" required className="input-field" value={newEvent.event_date} onChange={e => setNewEvent({...newEvent, event_date: e.target.value})} />
@@ -436,7 +436,7 @@ function CommunityDashboard({ activeTab, demoUser }) {
         <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
           <h3 style={{ marginBottom: '1rem' }}>Create Job/Internship Offer</h3>
           <form onSubmit={handleCreateJob} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="responsive-grid-2">
               <div className="input-group">
                 <label className="input-label">Job Title</label>
                 <input type="text" required className="input-field" value={newJob.title} onChange={e => setNewJob({...newJob, title: e.target.value})} />
@@ -446,7 +446,7 @@ function CommunityDashboard({ activeTab, demoUser }) {
                 <input type="text" required className="input-field" value={newJob.company} onChange={e => setNewJob({...newJob, company: e.target.value})} />
               </div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+            <div className="responsive-grid-3">
               <div className="input-group">
                 <label className="input-label">Location</label>
                 <input type="text" required className="input-field" value={newJob.location} onChange={e => setNewJob({...newJob, location: e.target.value})} />
@@ -507,11 +507,11 @@ function CommunityDashboard({ activeTab, demoUser }) {
 
             {editingJobId === job.id ? (
               <form onSubmit={(e) => handleUpdateJob(e, job.id)} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="responsive-grid-2">
                   <input type="text" required className="input-field" value={editJob.title} onChange={e => setEditJob({...editJob, title: e.target.value})} placeholder="Job Title" />
                   <input type="text" required className="input-field" value={editJob.company} onChange={e => setEditJob({...editJob, company: e.target.value})} placeholder="Company" />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                <div className="responsive-grid-3">
                   <input type="text" required className="input-field" value={editJob.location} onChange={e => setEditJob({...editJob, location: e.target.value})} placeholder="Location" />
                   <select className="input-field" value={editJob.job_type} onChange={e => setEditJob({...editJob, job_type: e.target.value})}>
                     <option value="full_time">Full Time</option>
@@ -597,7 +597,7 @@ function CommunityDashboard({ activeTab, demoUser }) {
   };
 
   const renderCVAnalyzer = () => (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+    <div className="responsive-grid-2" style={{ maxWidth: '1000px', margin: '0 auto', gap: '2rem' }}>
       <div className="glass-panel" style={{ alignSelf: 'start' }}>
         <h2 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <FileCheck size={24} /> AI CV Analyzer

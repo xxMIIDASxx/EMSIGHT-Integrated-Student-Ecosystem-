@@ -223,7 +223,7 @@ function AdminDashboard({ activeTab, demoUser }) {
           </div>
         </div>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+      <div className="grid-cards">
         <div className="glass-panel" style={{ textAlign: 'center', padding: '1.5rem' }}>
           <p style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--primary)' }}>{students.filter(s => s.role === 'student').length}</p>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.25rem' }}>Total Students</p>
@@ -276,7 +276,7 @@ function AdminDashboard({ activeTab, demoUser }) {
         <div style={{ padding: '1.5rem', background: 'var(--background)', borderRadius: 'var(--radius-md)', border: '1px solid var(--primary)', marginBottom: '2rem' }}>
           <h3>Edit Event</h3>
           <form onSubmit={handleUpdateEvent} style={{ marginTop: '1rem' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="responsive-grid-2">
               <div className="input-group"><label className="input-label">Title</label><input type="text" className="input-field" value={editingEvent.title} onChange={e => setEditingEvent({...editingEvent, title: e.target.value})} /></div>
               <div className="input-group"><label className="input-label">Description</label><input type="text" className="input-field" value={editingEvent.description} onChange={e => setEditingEvent({...editingEvent, description: e.target.value})} /></div>
               <div className="input-group"><label className="input-label">Type</label><select className="input-field" value={editingEvent.event_type} onChange={e => setEditingEvent({...editingEvent, event_type: e.target.value})}><option value="Cours">Cours</option><option value="TD">TD</option><option value="Examen">Examen</option></select></div>
@@ -288,7 +288,7 @@ function AdminDashboard({ activeTab, demoUser }) {
                 </select>
               </div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+            <div className="responsive-grid-2" style={{ marginTop: '1rem' }}>
               <div className="input-group"><label className="input-label">Start</label><input type="datetime-local" className="input-field" value={editingEvent.start_time.slice(0, 16)} onChange={e => setEditingEvent({...editingEvent, start_time: e.target.value})} /></div>
               <div className="input-group"><label className="input-label">End</label><input type="datetime-local" className="input-field" value={editingEvent.end_time.slice(0, 16)} onChange={e => setEditingEvent({...editingEvent, end_time: e.target.value})} /></div>
             </div>
@@ -304,7 +304,7 @@ function AdminDashboard({ activeTab, demoUser }) {
         <h3>Add New Event</h3>
         {eventSuccess && <div style={{ padding: '0.875rem', background: 'rgba(16,185,129,0.1)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16,185,129,0.3)', marginBottom: '1rem', color: 'var(--primary)' }}>Event added successfully!</div>}
         <form onSubmit={handleAddEvent} style={{ marginTop: '1rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="responsive-grid-2">
             <div className="input-group" style={{ gridColumn: '1 / -1' }}><label className="input-label">Title</label><input type="text" className="input-field" value={newEvent.title} onChange={e => setNewEvent({ ...newEvent, title: e.target.value })} required /></div>
             <div className="input-group" style={{ gridColumn: '1 / -1' }}><label className="input-label">Description</label><input type="text" className="input-field" value={newEvent.description} onChange={e => setNewEvent({ ...newEvent, description: e.target.value })} /></div>
             <div className="input-group"><label className="input-label">Type</label><select className="input-field" value={newEvent.event_type} onChange={e => setNewEvent({ ...newEvent, event_type: e.target.value })}><option value="Cours">Cours</option><option value="TD">TD</option><option value="Examen">Examen</option></select></div>
@@ -367,7 +367,7 @@ function AdminDashboard({ activeTab, demoUser }) {
           <div>
             <form onSubmit={handleAddSlot} style={{ padding: '1.5rem', background: 'var(--background)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border)', marginBottom: '2rem' }}>
               <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Add New Slot</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.5fr 1.5fr', gap: '1rem', alignItems: 'end' }}>
+              <div className="responsive-grid-4" style={{ alignItems: 'end' }}>
                 <div className="input-group">
                   <label className="input-label">Day</label>
                   <select className="input-field" value={newSlot.dayIdx} onChange={e => setNewSlot({...newSlot, dayIdx: parseInt(e.target.value)})}>
@@ -397,7 +397,8 @@ function AdminDashboard({ activeTab, demoUser }) {
               <button type="submit" className="btn btn-secondary" style={{ marginTop: '1rem' }}>+ Add Slot to {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][newSlot.dayIdx]}</button>
             </form>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+            <div className="timetable-wrapper">
+              <div className="scrollable-timetable">
               {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day, idx) => (
                 <div key={day} style={{ border: `1px solid var(--border)`, borderTop: `3px solid var(--secondary)`, borderRadius: 'var(--radius-md)', padding: '1rem', background: 'var(--background)', minHeight: '150px' }}>
                   <h4 style={{ textAlign: 'center', marginBottom: '1rem', color: 'var(--secondary)', fontSize: '0.8rem', textTransform: 'uppercase' }}>{day}</h4>
@@ -411,8 +412,8 @@ function AdminDashboard({ activeTab, demoUser }) {
                   {(!timetableData[idx] || timetableData[idx].length === 0) && <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textAlign: 'center', fontStyle: 'italic' }}>No slots</p>}
                 </div>
               ))}
+              </div>
             </div>
-
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <button className="btn btn-primary" onClick={handleSaveTimetable}>Save Timetable for {selectedClassForTimetable}</button>
               {timetableSuccess && <span style={{ color: 'var(--success)', fontWeight: 600 }}>Timetable saved successfully!</span>}
@@ -556,7 +557,7 @@ function AdminDashboard({ activeTab, demoUser }) {
         )}
 
         <form onSubmit={handleCreateUser}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+          <div className="responsive-grid-2" style={{ marginBottom: '1.5rem' }}>
             <div className="input-group">
               <label className="input-label">First Name</label>
               <input type="text" className="input-field" value={newUser.first_name} onChange={e => setNewUser({...newUser, first_name: e.target.value})} required />
@@ -581,7 +582,7 @@ function AdminDashboard({ activeTab, demoUser }) {
               </select>
             </div>
             {newUser.role === 'student' && (
-              <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: 'var(--surface)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
+              <div className="responsive-grid-2" style={{ gridColumn: '1 / -1', background: 'var(--surface)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
                 <div className="input-group">
                   <label className="input-label">Sector</label>
                   <select className="input-field" value={newUser.sector} onChange={e => setNewUser({...newUser, sector: e.target.value})}>
@@ -630,7 +631,7 @@ function AdminDashboard({ activeTab, demoUser }) {
 
       <div className="glass-panel">
         <h2 style={{ marginBottom: '1.5rem' }}>Assign Modules to Professors</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div className="responsive-grid-2" style={{ marginBottom: '1.5rem' }}>
           <div className="input-group">
             <label className="input-label">Select Professor</label>
             <select className="input-field" value={selectedTeacherForModules} onChange={e => setSelectedTeacherForModules(e.target.value)}>
@@ -643,7 +644,7 @@ function AdminDashboard({ activeTab, demoUser }) {
         </div>
 
         {selectedTeacherForModules && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+          <div className="responsive-grid-2" style={{ gap: '2rem' }}>
             <div>
               <h3 style={{ marginBottom: '1rem', color: 'var(--primary)' }}>1. Select Modules</h3>
               <div style={{ maxHeight: '400px', overflowY: 'auto', padding: '1rem', background: 'var(--background)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', marginBottom: '1.5rem' }}>

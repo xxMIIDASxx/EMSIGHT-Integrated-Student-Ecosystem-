@@ -1,7 +1,7 @@
 import React from 'react';
-import { Calendar, Bell, FileText, UserCheck, ShieldAlert, GraduationCap, LayoutDashboard, FileArchive, MessageSquare, Briefcase, FileCheck, Share2, FolderOpen, Bookmark, AlertTriangle } from 'lucide-react';
+import { Calendar, Bell, FileText, UserCheck, ShieldAlert, GraduationCap, LayoutDashboard, FileArchive, MessageSquare, Briefcase, FileCheck, Share2, FolderOpen, Bookmark, AlertTriangle, X } from 'lucide-react';
 
-function Sidebar({ user, currentRole, activeTab, setActiveTab, currentPlatform }) {
+function Sidebar({ user, currentRole, activeTab, setActiveTab, currentPlatform, isSidebarOpen, setIsSidebarOpen }) {
   const getNavItems = () => {
     switch(currentRole) {
       case 'student':
@@ -62,8 +62,9 @@ function Sidebar({ user, currentRole, activeTab, setActiveTab, currentPlatform }
   };
 
   return (
-    <div className="sidebar">
-      <div style={{padding: '2rem 1.5rem', borderBottom: '1px solid var(--border)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1rem'}}>
+    <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+      <div style={{padding: '2rem 1.5rem', borderBottom: '1px solid var(--border)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', position: 'relative'}}>
+
         {user && user.profile_picture ? (
           <img src={getProfilePicUrl(user.profile_picture)} alt="Profile" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }} />
         ) : (
@@ -81,17 +82,22 @@ function Sidebar({ user, currentRole, activeTab, setActiveTab, currentPlatform }
         </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        {navItems.map(item => (
-          <div
-            key={item.id}
-            className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
-            onClick={() => setActiveTab(item.id)}
-          >
-            {item.icon}
-            {item.label}
-          </div>
-        ))}
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+        <div key={currentPlatform} className="animate-sidebar-content">
+          {navItems.map(item => (
+            <div
+              key={item.id}
+              className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+              onClick={() => {
+                setActiveTab(item.id);
+                if (setIsSidebarOpen) setIsSidebarOpen(false);
+              }}
+            >
+              {item.icon}
+              {item.label}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Credits & Copyright */}

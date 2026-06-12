@@ -259,7 +259,7 @@ function TeacherDashboard({ activeTab, demoUser }) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+      <div className="grid-cards">
         <div className="glass-panel" style={{ textAlign: 'center', padding: '1.5rem' }}>
           <p style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--primary)' }}>{students.length}</p>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.25rem' }}>Students</p>
@@ -301,7 +301,8 @@ function TeacherDashboard({ activeTab, demoUser }) {
               <p style={{ color: 'var(--text-muted)' }}>You have no classes assigned. Contact an administrator to link classes to your profile.</p>
             </div>
           ) : hasSchedule ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
+            <div className="timetable-wrapper">
+              <div className="scrollable-timetable">
               {days.map((day, idx) => (
                 <div key={day} style={{ border: `1px solid ${dayBorders[idx]}30`, borderTop: `3px solid ${dayBorders[idx]}`, borderRadius: 'var(--radius-md)', padding: '1rem', background: dayColors[idx], minHeight: '150px' }}>
                   <h4 style={{ textAlign: 'center', marginBottom: '1rem', color: dayBorders[idx], fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{day}</h4>
@@ -314,6 +315,7 @@ function TeacherDashboard({ activeTab, demoUser }) {
                   {(!classSchedule[idx] || classSchedule[idx].length === 0) && <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textAlign: 'center', fontStyle: 'italic' }}>No slots</p>}
                 </div>
               ))}
+              </div>
             </div>
           ) : (
             <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--background)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border)' }}>
@@ -328,7 +330,7 @@ function TeacherDashboard({ activeTab, demoUser }) {
             <div style={{ padding: '1.5rem', background: 'var(--background)', borderRadius: 'var(--radius-md)', border: '1px solid var(--primary)', marginBottom: '2rem' }}>
               <h3>Edit Event</h3>
               <form onSubmit={handleUpdateEvent} style={{ marginTop: '1rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="responsive-grid-2">
                   <div className="input-group"><label className="input-label">Title</label><input type="text" className="input-field" value={editingEvent.title} onChange={e => setEditingEvent({...editingEvent, title: e.target.value})} /></div>
                   <div className="input-group"><label className="input-label">Description</label><input type="text" className="input-field" value={editingEvent.description} onChange={e => setEditingEvent({...editingEvent, description: e.target.value})} /></div>
                   <div className="input-group"><label className="input-label">Type</label><select className="input-field" value={editingEvent.event_type} onChange={e => setEditingEvent({...editingEvent, event_type: e.target.value})}><option value="Cours">Cours</option><option value="TD">TD</option><option value="Examen">Examen</option></select></div>
@@ -371,7 +373,7 @@ function TeacherDashboard({ activeTab, demoUser }) {
           <h2 style={{ marginBottom: '1.5rem' }}>Add Calendar Event</h2>
           {eventSuccess && <div style={{ padding: '0.875rem', background: 'rgba(16,185,129,0.1)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16,185,129,0.3)', marginBottom: '1rem', color: 'var(--primary)' }}>Event added successfully!</div>}
           <form onSubmit={handleAddEvent}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="responsive-grid-2">
               <div className="input-group" style={{ gridColumn: '1 / -1' }}><label className="input-label">Title</label><input type="text" className="input-field" value={newEvent.title} onChange={e => setNewEvent({ ...newEvent, title: e.target.value })} required /></div>
               <div className="input-group"><label className="input-label">Type</label><select className="input-field" value={newEvent.event_type} onChange={e => setNewEvent({ ...newEvent, event_type: e.target.value })}><option value="Cours">Cours</option><option value="TD">TD</option><option value="Examen">Examen</option></select></div>
               <div className="input-group"><label className="input-label">Target Class(es)</label><input type="text" className="input-field" placeholder="e.g. 1A_IIR or All Classes" value={newEvent.target_classes} onChange={e => setNewEvent({ ...newEvent, target_classes: e.target.value })} /></div>

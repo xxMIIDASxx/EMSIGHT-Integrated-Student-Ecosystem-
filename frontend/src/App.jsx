@@ -18,6 +18,7 @@ function App() {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -92,13 +93,23 @@ function App() {
             setActiveTab('dashboard');
           }
         }}
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
       />
+      
+      <div 
+        className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`}
+        onClick={() => setIsSidebarOpen(false)}
+      ></div>
+
       <Sidebar 
         user={user} 
         currentRole={user.role} 
         activeTab={activeTab} 
         setActiveTab={setActiveTab}
         currentPlatform={currentPlatform}
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
       />
       
       <main className="main-content">

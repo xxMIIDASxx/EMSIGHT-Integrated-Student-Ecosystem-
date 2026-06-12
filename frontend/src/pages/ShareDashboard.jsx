@@ -103,7 +103,7 @@ function ShareDashboard({ activeTab, demoUser }) {
         <div className="glass-panel">
           <h2 style={{ marginBottom: "1rem" }}>Share a resource</h2>
           <form onSubmit={handleUpload}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <div className="responsive-grid-2">
               <div className="input-group">
                 <label className="input-label">Title</label>
                 <input className="input-field" required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
@@ -141,7 +141,7 @@ function ShareDashboard({ activeTab, demoUser }) {
           {activeTab === "favorites" && "My List"}
           {activeTab === "reported" && "Reported Resources"}
         </h2>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+        <div className="responsive-grid-2" style={{ marginBottom: "1rem" }}>
           <input className="input-field" placeholder="Search resources..." value={query} onChange={(e) => setQuery(e.target.value)} />
           <select className="input-field" value={resourceTypeFilter} onChange={(e) => setResourceTypeFilter(e.target.value)}>
             <option value="">All types</option>
