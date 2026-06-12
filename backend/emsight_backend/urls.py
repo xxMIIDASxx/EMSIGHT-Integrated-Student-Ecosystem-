@@ -28,7 +28,14 @@ def run_migrations(request):
         from django.contrib.auth import get_user_model
         User = get_user_model()
         if not User.objects.filter(username='admin').exists():
-            User.objects.create_superuser('admin', 'admin@example.com', 'admin')
+            admin_user = User.objects.create_superuser('admin', 'admin@example.com', 'admin')
+        else:
+            admin_user = User.objects.get(username='admin')
+            
+        admin_user.role = 'admin'
+        admin_user.save()
+        from accounts.models import AdminProfile
+        AdminProfile.objects.get_or_create(user=admin_user, service='Administration')
         return HttpResponse("SUCCESS! Database migrated and 'admin' user created.")
     except Exception as e:
         return HttpResponse(f"ERROR: {e}")
