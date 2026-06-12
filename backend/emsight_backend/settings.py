@@ -151,5 +151,13 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+# Allow HTTPS POST requests from Vercel domains
+CSRF_TRUSTED_ORIGINS = ['https://' + host for host in ALLOWED_HOSTS if host != '*']
+# Also allow any explicit origins provided via env
+if os.environ.get('VERCEL_URL'):
+    CSRF_TRUSTED_ORIGINS.append(f"https://{os.environ.get('VERCEL_URL')}")
+# Fallback catch-all for development or dynamic Vercel URLs if needed:
+CSRF_TRUSTED_ORIGINS.append("https://*.vercel.app")
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
