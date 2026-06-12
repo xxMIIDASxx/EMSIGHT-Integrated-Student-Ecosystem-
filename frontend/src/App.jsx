@@ -26,14 +26,13 @@ function App() {
   }, [theme]);
 
   const handleLogin = (userData) => {
-    setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
-    setActiveTab('dashboard');
+    window.location.reload();
   };
 
   const handleLogout = () => {
-    setUser(null);
     localStorage.removeItem('user');
+    window.location.reload();
   };
 
   if (!user) {
