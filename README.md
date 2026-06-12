@@ -12,15 +12,22 @@ A modern, integrated student ecosystem built with React, Vite, and Django.
 Navigate to the `backend` directory and start the Django server:
 ```powershell
 cd backend
+# Delete any broken virtual environment (optional, but good if you moved the folder)
+if (Test-Path venv) { Remove-Item -Recurse -Force venv }
+
 python -m venv venv
 venv\Scripts\activate
+
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 pip install groq
+
 python manage.py migrate
 python manage.py runserver
 ```
 The backend should now be running at `http://127.0.0.1:8000`.
+
+*(Note: Production dependencies for Render are located in `requirements-prod.txt` and will be automatically installed during deployment via `build.sh`)*
 
 ### 2. Setup the Frontend
 Open a new terminal window, navigate to the `frontend` directory, install dependencies, and start the Vite development server:
