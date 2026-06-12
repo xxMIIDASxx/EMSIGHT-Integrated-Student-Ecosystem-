@@ -7,12 +7,12 @@ function AdminDashboard({ activeTab, demoUser }) {
   const [documentRequests, setDocumentRequests] = useState([]);
   const [students, setStudents] = useState([]);
   const [calendar, setCalendar] = useState([]);
-  
+
   // Calendar Edit State
   const [editingEvent, setEditingEvent] = useState(null);
   const [newEvent, setNewEvent] = useState({ title: '', description: '', start_time: '', end_time: '', event_type: 'Cours', target_classes: 'All Classes', professor: '' });
   const [eventSuccess, setEventSuccess] = useState(false);
-  
+
   const [newNotif, setNewNotif] = useState({ title: '', content: '' });
   const [notifSuccess, setNotifSuccess] = useState(false);
 
@@ -123,7 +123,7 @@ function AdminDashboard({ activeTab, demoUser }) {
   const handleAddEvent = (e) => {
     e.preventDefault();
     if (!demoUser) return;
-    
+
     // professor field can be empty or ID
     const payload = {
       ...newEvent,
@@ -143,7 +143,7 @@ function AdminDashboard({ activeTab, demoUser }) {
     e.preventDefault();
     const payload = { ...editingEvent };
     if (!payload.professor) payload.professor = null;
-    
+
     api.patch(`/portal/calendar/${editingEvent.id}/`, payload).then(() => {
       setEditingEvent(null);
       fetchData();
@@ -174,7 +174,7 @@ function AdminDashboard({ activeTab, demoUser }) {
     setTimetableData(prev => {
       const updated = [...prev];
       updated[newSlot.dayIdx] = [...(updated[newSlot.dayIdx] || []), { time: newSlot.time, name: displayName }];
-      updated[newSlot.dayIdx].sort((a,b) => a.time.localeCompare(b.time));
+      updated[newSlot.dayIdx].sort((a, b) => a.time.localeCompare(b.time));
       return updated;
     });
     setNewSlot({ dayIdx: 0, time: '', subject: '', teacher: '' });
@@ -193,10 +193,10 @@ function AdminDashboard({ activeTab, demoUser }) {
       <div className="glass-panel">
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <div style={{ width: '120px', height: '120px', borderRadius: '50%', backgroundColor: 'rgba(16,185,129,0.1)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid rgba(16,185,129,0.3)', flexShrink: 0 }}>
-            <img 
-              src={demoUser?.profile_picture ? (demoUser.profile_picture.startsWith('http') ? demoUser.profile_picture : `${import.meta.env.PROD ? '' : 'http://127.0.0.1:8000'}${demoUser.profile_picture}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${demoUser?.first_name || 'Admin'}&top=${demoUser?.gender === 'F' ? 'longHair,bob,curly' : 'shortFlat,shortRound,sides'}&mouth=smile&eyebrows=default&eyes=default`} 
-              alt="Profile" 
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+            <img
+              src={demoUser?.profile_picture ? (demoUser.profile_picture.startsWith('http') ? demoUser.profile_picture : `${import.meta.env.VITE_API_BASE_URL ? import.meta.env.VITE_API_BASE_URL.replace('/api/', '') : 'http://127.0.0.1:8000'}${demoUser.profile_picture}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${demoUser?.first_name || 'Admin'}&top=${demoUser?.gender === 'F' ? 'longHair,bob,curly' : 'shortFlat,shortRound,sides'}&mouth=smile&eyebrows=default&eyes=default`}
+              alt="Profile"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = `https://api.dicebear.com/7.x/initials/svg?seed=${demoUser?.first_name || 'A'}&backgroundColor=10B981&color=ffffff`;
@@ -271,26 +271,26 @@ function AdminDashboard({ activeTab, demoUser }) {
     <div className="glass-panel">
       <h2 style={{ marginBottom: '1.5rem' }}>Global Calendar Management</h2>
       <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>As an Administrator, you can modify or delete any event scheduled by teachers.</p>
-      
+
       {editingEvent ? (
         <div style={{ padding: '1.5rem', background: 'var(--background)', borderRadius: 'var(--radius-md)', border: '1px solid var(--primary)', marginBottom: '2rem' }}>
           <h3>Edit Event</h3>
           <form onSubmit={handleUpdateEvent} style={{ marginTop: '1rem' }}>
             <div className="responsive-grid-2">
-              <div className="input-group"><label className="input-label">Title</label><input type="text" className="input-field" value={editingEvent.title} onChange={e => setEditingEvent({...editingEvent, title: e.target.value})} /></div>
-              <div className="input-group"><label className="input-label">Description</label><input type="text" className="input-field" value={editingEvent.description} onChange={e => setEditingEvent({...editingEvent, description: e.target.value})} /></div>
-              <div className="input-group"><label className="input-label">Type</label><select className="input-field" value={editingEvent.event_type} onChange={e => setEditingEvent({...editingEvent, event_type: e.target.value})}><option value="Cours">Cours</option><option value="TD">TD</option><option value="Examen">Examen</option></select></div>
-              <div className="input-group"><label className="input-label">Target Class(es)</label><input type="text" className="input-field" value={editingEvent.target_classes || ''} onChange={e => setEditingEvent({...editingEvent, target_classes: e.target.value})} /></div>
+              <div className="input-group"><label className="input-label">Title</label><input type="text" className="input-field" value={editingEvent.title} onChange={e => setEditingEvent({ ...editingEvent, title: e.target.value })} /></div>
+              <div className="input-group"><label className="input-label">Description</label><input type="text" className="input-field" value={editingEvent.description} onChange={e => setEditingEvent({ ...editingEvent, description: e.target.value })} /></div>
+              <div className="input-group"><label className="input-label">Type</label><select className="input-field" value={editingEvent.event_type} onChange={e => setEditingEvent({ ...editingEvent, event_type: e.target.value })}><option value="Cours">Cours</option><option value="TD">TD</option><option value="Examen">Examen</option></select></div>
+              <div className="input-group"><label className="input-label">Target Class(es)</label><input type="text" className="input-field" value={editingEvent.target_classes || ''} onChange={e => setEditingEvent({ ...editingEvent, target_classes: e.target.value })} /></div>
               <div className="input-group"><label className="input-label">Professor</label>
-                <select className="input-field" value={editingEvent.professor || ''} onChange={e => setEditingEvent({...editingEvent, professor: e.target.value})}>
+                <select className="input-field" value={editingEvent.professor || ''} onChange={e => setEditingEvent({ ...editingEvent, professor: e.target.value })}>
                   <option value="">None / Admin</option>
                   {students.filter(s => s.role === 'teacher').map(t => <option key={t.id} value={t.id}>{t.first_name} {t.last_name}</option>)}
                 </select>
               </div>
             </div>
             <div className="responsive-grid-2" style={{ marginTop: '1rem' }}>
-              <div className="input-group"><label className="input-label">Start</label><input type="datetime-local" className="input-field" value={editingEvent.start_time.slice(0, 16)} onChange={e => setEditingEvent({...editingEvent, start_time: e.target.value})} /></div>
-              <div className="input-group"><label className="input-label">End</label><input type="datetime-local" className="input-field" value={editingEvent.end_time.slice(0, 16)} onChange={e => setEditingEvent({...editingEvent, end_time: e.target.value})} /></div>
+              <div className="input-group"><label className="input-label">Start</label><input type="datetime-local" className="input-field" value={editingEvent.start_time.slice(0, 16)} onChange={e => setEditingEvent({ ...editingEvent, start_time: e.target.value })} /></div>
+              <div className="input-group"><label className="input-label">End</label><input type="datetime-local" className="input-field" value={editingEvent.end_time.slice(0, 16)} onChange={e => setEditingEvent({ ...editingEvent, end_time: e.target.value })} /></div>
             </div>
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
               <button type="submit" className="btn btn-primary">Update Event</button>
@@ -330,10 +330,10 @@ function AdminDashboard({ activeTab, demoUser }) {
           <tbody>
             {calendar.map(ev => (
               <tr key={ev.id}>
-                <td><strong>{ev.title}</strong><br/><small style={{color:'var(--text-muted)'}}>{ev.description}</small></td>
+                <td><strong>{ev.title}</strong><br /><small style={{ color: 'var(--text-muted)' }}>{ev.description}</small></td>
                 <td>
-                  <span className="badge badge-info">{ev.event_type}</span><br/>
-                  <small style={{color:'var(--text-muted)', marginTop: '0.2rem', display: 'inline-block'}}>{ev.target_classes}</small>
+                  <span className="badge badge-info">{ev.event_type}</span><br />
+                  <small style={{ color: 'var(--text-muted)', marginTop: '0.2rem', display: 'inline-block' }}>{ev.target_classes}</small>
                 </td>
                 <td>{new Date(ev.start_time).toLocaleString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</td>
                 <td>{ev.professor_name || ev.created_by_name}</td>
@@ -352,7 +352,7 @@ function AdminDashboard({ activeTab, demoUser }) {
       <div className="glass-panel" style={{ marginTop: '3rem', background: 'var(--surface)' }}>
         <h2 style={{ marginBottom: '1.5rem', color: 'var(--secondary)' }}>Weekly Timetable Management</h2>
         <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Select a class to view, edit, or create its 5-day schedule.</p>
-        
+
         <div className="input-group" style={{ marginBottom: '2rem' }}>
           <label className="input-label">Select Target Class</label>
           <select className="input-field" value={selectedClassForTimetable} onChange={e => setSelectedClassForTimetable(e.target.value)}>
@@ -370,21 +370,21 @@ function AdminDashboard({ activeTab, demoUser }) {
               <div className="responsive-grid-4" style={{ alignItems: 'end' }}>
                 <div className="input-group">
                   <label className="input-label">Day</label>
-                  <select className="input-field" value={newSlot.dayIdx} onChange={e => setNewSlot({...newSlot, dayIdx: parseInt(e.target.value)})}>
+                  <select className="input-field" value={newSlot.dayIdx} onChange={e => setNewSlot({ ...newSlot, dayIdx: parseInt(e.target.value) })}>
                     {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((d, i) => <option key={i} value={i}>{d}</option>)}
                   </select>
                 </div>
                 <div className="input-group">
                   <label className="input-label">Time Range</label>
-                  <input type="text" className="input-field" placeholder="e.g. 08:30-10:15" value={newSlot.time} onChange={e => setNewSlot({...newSlot, time: e.target.value})} required />
+                  <input type="text" className="input-field" placeholder="e.g. 08:30-10:15" value={newSlot.time} onChange={e => setNewSlot({ ...newSlot, time: e.target.value })} required />
                 </div>
                 <div className="input-group">
                   <label className="input-label">Subject</label>
-                  <input type="text" className="input-field" placeholder="e.g. Algorithmique" value={newSlot.subject} onChange={e => setNewSlot({...newSlot, subject: e.target.value})} required />
+                  <input type="text" className="input-field" placeholder="e.g. Algorithmique" value={newSlot.subject} onChange={e => setNewSlot({ ...newSlot, subject: e.target.value })} required />
                 </div>
                 <div className="input-group">
                   <label className="input-label">Teacher</label>
-                  <select className="input-field" value={newSlot.teacher} onChange={e => setNewSlot({...newSlot, teacher: e.target.value})}>
+                  <select className="input-field" value={newSlot.teacher} onChange={e => setNewSlot({ ...newSlot, teacher: e.target.value })}>
                     <option value="">-- Select Teacher --</option>
                     {students.filter(s => s.role === 'teacher').map(t => (
                       <option key={t.id} value={`${t.first_name} ${t.last_name}`}>
@@ -399,19 +399,19 @@ function AdminDashboard({ activeTab, demoUser }) {
 
             <div className="timetable-wrapper">
               <div className="scrollable-timetable">
-              {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day, idx) => (
-                <div key={day} style={{ border: `1px solid var(--border)`, borderTop: `3px solid var(--secondary)`, borderRadius: 'var(--radius-md)', padding: '1rem', background: 'var(--background)', minHeight: '150px' }}>
-                  <h4 style={{ textAlign: 'center', marginBottom: '1rem', color: 'var(--secondary)', fontSize: '0.8rem', textTransform: 'uppercase' }}>{day}</h4>
-                  {timetableData[idx] && timetableData[idx].map((s, i) => (
-                    <div key={i} style={{ padding: '0.5rem', background: 'var(--surface)', marginBottom: '0.5rem', borderRadius: '4px', borderLeft: '3px solid var(--secondary)', position: 'relative' }}>
-                      <button type="button" onClick={() => handleRemoveSlot(idx, i)} style={{ position: 'absolute', top: '0.1rem', right: '0.1rem', background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' }}>&times;</button>
-                      <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--secondary)' }}>{s.time}</p>
-                      <p style={{ fontSize: '0.75rem', marginTop: '0.2rem', color: 'var(--text-main)', paddingRight: '0.5rem' }}>{s.name}</p>
-                    </div>
-                  ))}
-                  {(!timetableData[idx] || timetableData[idx].length === 0) && <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textAlign: 'center', fontStyle: 'italic' }}>No slots</p>}
-                </div>
-              ))}
+                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((day, idx) => (
+                  <div key={day} style={{ border: `1px solid var(--border)`, borderTop: `3px solid var(--secondary)`, borderRadius: 'var(--radius-md)', padding: '1rem', background: 'var(--background)', minHeight: '150px' }}>
+                    <h4 style={{ textAlign: 'center', marginBottom: '1rem', color: 'var(--secondary)', fontSize: '0.8rem', textTransform: 'uppercase' }}>{day}</h4>
+                    {timetableData[idx] && timetableData[idx].map((s, i) => (
+                      <div key={i} style={{ padding: '0.5rem', background: 'var(--surface)', marginBottom: '0.5rem', borderRadius: '4px', borderLeft: '3px solid var(--secondary)', position: 'relative' }}>
+                        <button type="button" onClick={() => handleRemoveSlot(idx, i)} style={{ position: 'absolute', top: '0.1rem', right: '0.1rem', background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' }}>&times;</button>
+                        <p style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--secondary)' }}>{s.time}</p>
+                        <p style={{ fontSize: '0.75rem', marginTop: '0.2rem', color: 'var(--text-main)', paddingRight: '0.5rem' }}>{s.name}</p>
+                      </div>
+                    ))}
+                    {(!timetableData[idx] || timetableData[idx].length === 0) && <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textAlign: 'center', fontStyle: 'italic' }}>No slots</p>}
+                  </div>
+                ))}
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -451,7 +451,7 @@ function AdminDashboard({ activeTab, demoUser }) {
         setNewUser({ first_name: '', last_name: '', role: 'student', gender: 'M', sector: 'IIR', grade: 1, subSector: 'IA' });
         setTimeout(() => setUserCreationStatus(''), 5000);
         // Refresh users list if needed, currently we just fetch students, let's fetch all
-        api.get('/accounts/users/').then(r => setStudents(r.data)); 
+        api.get('/accounts/users/').then(r => setStudents(r.data));
       })
       .catch((err) => {
         setUserCreationStatus(err.response?.data?.error || 'Error creating user');
@@ -460,16 +460,16 @@ function AdminDashboard({ activeTab, demoUser }) {
   };
 
   const handleToggleModule = (moduleName) => {
-    setTeacherModules(prev => 
-      prev.includes(moduleName) 
+    setTeacherModules(prev =>
+      prev.includes(moduleName)
         ? prev.filter(m => m !== moduleName)
         : [...prev, moduleName]
     );
   };
 
   const handleToggleClass = (className) => {
-    setTeacherClasses(prev => 
-      prev.includes(className) 
+    setTeacherClasses(prev =>
+      prev.includes(className)
         ? prev.filter(c => c !== className)
         : [...prev, className]
     );
@@ -549,7 +549,7 @@ function AdminDashboard({ activeTab, demoUser }) {
       <div className="glass-panel">
         <h2 style={{ marginBottom: '1.5rem' }}>Create New User</h2>
         <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>The email will be auto-generated based on the role. Default password is <strong>password123</strong>.</p>
-        
+
         {userCreationStatus && (
           <div style={{ padding: '0.875rem', background: userCreationStatus.includes('successfully') ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', borderRadius: 'var(--radius-md)', border: `1px solid ${userCreationStatus.includes('successfully') ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, marginBottom: '1.5rem', color: userCreationStatus.includes('successfully') ? 'var(--primary)' : 'var(--danger)' }}>
             {userCreationStatus}
@@ -560,15 +560,15 @@ function AdminDashboard({ activeTab, demoUser }) {
           <div className="responsive-grid-2" style={{ marginBottom: '1.5rem' }}>
             <div className="input-group">
               <label className="input-label">First Name</label>
-              <input type="text" className="input-field" value={newUser.first_name} onChange={e => setNewUser({...newUser, first_name: e.target.value})} required />
+              <input type="text" className="input-field" value={newUser.first_name} onChange={e => setNewUser({ ...newUser, first_name: e.target.value })} required />
             </div>
             <div className="input-group">
               <label className="input-label">Last Name</label>
-              <input type="text" className="input-field" value={newUser.last_name} onChange={e => setNewUser({...newUser, last_name: e.target.value})} required />
+              <input type="text" className="input-field" value={newUser.last_name} onChange={e => setNewUser({ ...newUser, last_name: e.target.value })} required />
             </div>
             <div className="input-group">
               <label className="input-label">Role</label>
-              <select className="input-field" value={newUser.role} onChange={e => setNewUser({...newUser, role: e.target.value})}>
+              <select className="input-field" value={newUser.role} onChange={e => setNewUser({ ...newUser, role: e.target.value })}>
                 <option value="student">Student (@emsi-edu.ma)</option>
                 <option value="teacher">Teacher (@emsi-prof.ma)</option>
                 <option value="admin">Admin (@emsi.ma)</option>
@@ -576,7 +576,7 @@ function AdminDashboard({ activeTab, demoUser }) {
             </div>
             <div className="input-group">
               <label className="input-label">Gender</label>
-              <select className="input-field" value={newUser.gender} onChange={e => setNewUser({...newUser, gender: e.target.value})}>
+              <select className="input-field" value={newUser.gender} onChange={e => setNewUser({ ...newUser, gender: e.target.value })}>
                 <option value="M">Male</option>
                 <option value="F">Female</option>
               </select>
@@ -585,7 +585,7 @@ function AdminDashboard({ activeTab, demoUser }) {
               <div className="responsive-grid-2" style={{ gridColumn: '1 / -1', background: 'var(--surface)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
                 <div className="input-group">
                   <label className="input-label">Sector</label>
-                  <select className="input-field" value={newUser.sector} onChange={e => setNewUser({...newUser, sector: e.target.value})}>
+                  <select className="input-field" value={newUser.sector} onChange={e => setNewUser({ ...newUser, sector: e.target.value })}>
                     <option value="IIR">Ingénierie Informatique et Réseaux</option>
                     <option value="GI">Ingénierie Industrielle</option>
                     <option value="GE">Ingénierie Électrique et Systèmes Intelligents</option>
@@ -595,14 +595,14 @@ function AdminDashboard({ activeTab, demoUser }) {
                 </div>
                 <div className="input-group">
                   <label className="input-label">Grade</label>
-                  <select className="input-field" value={newUser.grade} onChange={e => setNewUser({...newUser, grade: parseInt(e.target.value)})}>
+                  <select className="input-field" value={newUser.grade} onChange={e => setNewUser({ ...newUser, grade: parseInt(e.target.value) })}>
                     {[1, 2, 3, 4, 5].map(y => <option key={y} value={y}>{y} Year</option>)}
                   </select>
                 </div>
                 {(newUser.sector === 'IIR' && (newUser.grade === 4 || newUser.grade === 5)) && (
                   <div className="input-group">
                     <label className="input-label">Option / Spécialité</label>
-                    <select className="input-field" value={newUser.subSector || 'IA'} onChange={e => setNewUser({...newUser, subSector: e.target.value})}>
+                    <select className="input-field" value={newUser.subSector || 'IA'} onChange={e => setNewUser({ ...newUser, subSector: e.target.value })}>
                       <option value="IA">Intelligence Artificielle et sciences de données (IA)</option>
                       <option value="DD">Développement digital et SI (DD)</option>
                       <option value="CIR">Cybersecurité et infrastructures réseaux (CIR)</option>
@@ -616,7 +616,7 @@ function AdminDashboard({ activeTab, demoUser }) {
               </div>
             )}
           </div>
-          
+
           <div style={{ padding: '1rem', background: 'var(--background)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border)', marginBottom: '1.5rem' }}>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Email Preview:</p>
             <p style={{ fontWeight: 600 }}>
@@ -663,8 +663,8 @@ function AdminDashboard({ activeTab, demoUser }) {
                                   const modId = `${mod}`;
                                   return (
                                     <label key={modId} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.8rem' }}>
-                                      <input 
-                                        type="checkbox" 
+                                      <input
+                                        type="checkbox"
                                         checked={teacherModules.includes(modId)}
                                         onChange={() => handleToggleModule(modId)}
                                       />
@@ -698,8 +698,8 @@ function AdminDashboard({ activeTab, demoUser }) {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '0.5rem' }}>
                       {bases.map(cls => (
                         <label key={cls} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'pointer', fontSize: '0.8rem' }}>
-                          <input 
-                            type="checkbox" 
+                          <input
+                            type="checkbox"
                             checked={teacherClasses.includes(cls)}
                             onChange={() => handleToggleClass(cls)}
                           />
@@ -711,7 +711,7 @@ function AdminDashboard({ activeTab, demoUser }) {
                 ))}
               </div>
             </div>
-            
+
             <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <button className="btn btn-primary" onClick={handleSaveModules}>Save Assignments</button>
               {moduleSaveSuccess && <span style={{ color: 'var(--success)', fontWeight: 600 }}>Successfully saved!</span>}
@@ -731,8 +731,8 @@ function AdminDashboard({ activeTab, demoUser }) {
                 if (s.role === 'teacher' && s.teacher_profile) {
                   let mCount = 0;
                   let cCount = 0;
-                  try { mCount = Array.isArray(JSON.parse(s.teacher_profile.matiere)) ? JSON.parse(s.teacher_profile.matiere).length : 0; } catch {}
-                  try { cCount = Array.isArray(JSON.parse(s.teacher_profile.classes)) ? JSON.parse(s.teacher_profile.classes).length : 0; } catch {}
+                  try { mCount = Array.isArray(JSON.parse(s.teacher_profile.matiere)) ? JSON.parse(s.teacher_profile.matiere).length : 0; } catch { }
+                  try { cCount = Array.isArray(JSON.parse(s.teacher_profile.classes)) ? JSON.parse(s.teacher_profile.classes).length : 0; } catch { }
                   assignStr = `${mCount} Module(s), ${cCount} Class(es)`;
                 }
                 return (

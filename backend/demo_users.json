@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Ahmed Benali",
+        "role": "Teacher",
+        "email": "teacher@emsi-prof.ma",
+        "password": "teacherpassword123"
+    },
+    {
+        "name": "Sara Alaoui",
+        "role": "Student",
+        "email": "student@emsi-edu.ma",
+        "password": "studentpassword123"
+    },
+    {
+        "name": "Admin",
+        "role": "Admin",
+        "email": "admin@example.com",
+        "password": "admin"
+    }
+]
