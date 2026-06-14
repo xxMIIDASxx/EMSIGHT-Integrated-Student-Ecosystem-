@@ -27,7 +27,7 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-bh041w=+ko1%a&axcs!=*21y)ympapq71ykvwlhy3zy@a2)=01')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
