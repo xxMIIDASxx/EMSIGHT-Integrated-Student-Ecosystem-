@@ -167,8 +167,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Cloudinary Storage Configuration
 if os.environ.get('CLOUDINARY_URL'):
-    CLOUDINARY_STORAGE = {
-        'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
-    }
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.RawMediaCloudinaryStorage'
 
