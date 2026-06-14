@@ -63,6 +63,7 @@ class CVAnalysisViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         cv_text = request.data.get('cv_text')
+        cv_name = request.data.get('cv_name')
         job_offer_id = request.data.get('job_offer')
         user_id = request.data.get('user_id')
         
@@ -103,6 +104,7 @@ class CVAnalysisViewSet(viewsets.ModelViewSet):
         analysis = CVAnalysis.objects.create(
             user=user,
             job_offer=job_offer,
+            cv_name=cv_name,
             cv_text=cv_text,
             score=score,
             suggestions=suggestions

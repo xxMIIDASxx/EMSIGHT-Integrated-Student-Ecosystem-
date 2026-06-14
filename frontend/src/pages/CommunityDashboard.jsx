@@ -177,7 +177,7 @@ function CommunityDashboard({ activeTab, demoUser }) {
     setAnalysisLoading(true);
     setCurrentAnalysis(null);
 
-    const payload = { cv_text: cvText, user_id: demoUser?.id };
+    const payload = { cv_text: cvText, user_id: demoUser?.id, cv_name: cvFileName };
     if (selectedJob) {
       payload.job_offer = selectedJob;
     }
@@ -708,6 +708,11 @@ function CommunityDashboard({ activeTab, demoUser }) {
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                     Target: {analysis.job_offer_detail ? analysis.job_offer_detail.title : 'General Analysis'}
                   </p>
+                  {analysis.cv_name && (
+                    <p style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 500, marginTop: '0.25rem' }}>
+                      File: {analysis.cv_name}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

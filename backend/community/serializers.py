@@ -44,5 +44,5 @@ class CVAnalysisSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CVAnalysis
-        fields = ['id', 'user', 'user_detail', 'job_offer', 'job_offer_detail', 'cv_text', 'score', 'suggestions', 'created_at']
+        fields = ['id', 'user', 'user_detail', 'job_offer', 'job_offer_detail', 'cv_name', 'cv_text', 'score', 'suggestions', 'created_at']
         read_only_fields = ['user', 'score', 'suggestions']

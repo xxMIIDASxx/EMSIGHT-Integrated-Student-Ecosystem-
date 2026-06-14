@@ -54,6 +54,7 @@ class JobOffer(models.Model):
 class CVAnalysis(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='cv_analyses')
     job_offer = models.ForeignKey(JobOffer, on_delete=models.SET_NULL, null=True, blank=True)
+    cv_name = models.CharField(max_length=255, blank=True, null=True, help_text="Name of the uploaded CV file")
     cv_text = models.TextField(help_text="Extracted text from CV")
     score = models.FloatField(help_text="Relevance score out of 100")
     suggestions = models.TextField(help_text="Tips for optimization")
