@@ -162,6 +162,15 @@ if os.environ.get('VERCEL_URL'):
 # Fallback catch-all for development or dynamic Vercel URLs if needed:
 CSRF_TRUSTED_ORIGINS.append("https://*.vercel.app")
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
