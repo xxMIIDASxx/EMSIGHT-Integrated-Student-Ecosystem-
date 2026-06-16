@@ -294,9 +294,11 @@ const ChatWidget = ({ demoUser }) => {
                                     <img src={m.attachment} alt="attachment" style={{ maxWidth: '100%', borderRadius: '8px', maxHeight: '150px', objectFit: 'cover' }} />
                                   </a>
                                 ) : (
-                                  <a href={m.attachment} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none', background: 'rgba(0,0,0,0.05)', padding: '6px 10px', borderRadius: '8px' }}>
-                                    <FileText size={16} />
-                                    <span style={{ fontSize: '0.8rem', textDecoration: 'underline' }}>View Document</span>
+                                  <a href={m.attachment} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none', background: 'rgba(0,0,0,0.05)', padding: '6px 10px', borderRadius: '8px', maxWidth: '100%' }}>
+                                    <FileText size={16} style={{ flexShrink: 0 }} />
+                                    <span style={{ fontSize: '0.8rem', textDecoration: 'underline', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                      {decodeURIComponent(m.attachment.split('/').pop().split('?')[0])}
+                                    </span>
                                   </a>
                                 )}
                               </div>
