@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Check, CheckCheck, Paperclip, FileText, Image as ImageIcon, Trash2, Ban, Maximize2, Minimize2 } from 'lucide-react';
+import { MessageCircle, X, Send, Check, CheckCheck, Paperclip, FileText, Image as ImageIcon, Trash2, Ban, Maximize2, Minimize2, ArrowLeft } from 'lucide-react';
 import api from '../api';
 
 const ChatWidget = ({ demoUser }) => {
@@ -196,7 +196,13 @@ const ChatWidget = ({ demoUser }) => {
             color: 'white',
             flexShrink: 0
           }}>
-            <MessageCircle size={20} />
+            {!isExpanded && selectedUser ? (
+              <button onClick={() => setSelectedUser(null)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 0 }}>
+                <ArrowLeft size={20} />
+              </button>
+            ) : (
+              <MessageCircle size={20} />
+            )}
             <span style={{ fontWeight: '700' }}>Community Chat</span>
             {selectedUser && (
               <span style={{ marginLeft: 'auto', marginRight: '0.5rem', fontSize: '0.85rem', opacity: 0.9 }}>
@@ -215,10 +221,11 @@ const ChatWidget = ({ demoUser }) => {
 
           <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
             <div style={{
-              width: selectedUser ? '70px' : '100%',
+              width: selectedUser ? (isExpanded ? '70px' : '0px') : '100%',
               background: '#f8fafc',
-              borderRight: '1px solid #e2e8f0',
+              borderRight: (selectedUser && !isExpanded) ? 'none' : '1px solid #e2e8f0',
               overflowY: 'auto',
+              overflowX: 'hidden',
               transition: 'width 0.25s ease',
               flexShrink: 0
             }}>
