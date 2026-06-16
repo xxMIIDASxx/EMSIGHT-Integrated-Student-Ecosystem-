@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Check, CheckCheck, Paperclip, FileText, Image as ImageIcon } from 'lucide-react';
+import { MessageCircle, X, Send, Check, CheckCheck, Paperclip, FileText, Image as ImageIcon, Trash2, Ban } from 'lucide-react';
 import api from '../api';
 
 const ChatWidget = ({ demoUser }) => {
@@ -10,6 +10,7 @@ const ChatWidget = ({ demoUser }) => {
   const [newMessage, setNewMessage] = useState('');
   const [attachment, setAttachment] = useState(null);
   const [seenIds, setSeenIds] = useState(new Set());
+  const [deletingMessageId, setDeletingMessageId] = useState(null);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -52,10 +53,22 @@ const ChatWidget = ({ demoUser }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const filteredMessages = selectedUser ? messages.filter(m =>
-    (m.sender?.id === demoUser?.id && m.receiver === selectedUser.id) ||
-    (m.sender?.id === selectedUser.id && m.receiver === demoUser?.id)
-  ) : [];
+  const filteredMessages = selectedUser ? messages.filter(m => {
+    const isMe = m.sender?.id === demoUser?.id;
+    if (isMe && m.deleted_by_sender) return false;
+    if (!isMe && m.deleted_by_receiver) return false;
+    return (m.sender?.id === demoUser?.id && m.receiver === selectedUser.id) ||
+           (m.sender?.id === selectedUser.id && m.receiver === demoUser?.id);
+  }) : [];
+
+  const handleDeleteMessage = (msgId, type) => {
+    api.post(`/community/messages/${msgId}/delete_message/`, { user_id: demoUser.id, type })
+      .then(() => {
+        fetchMessages();
+        setDeletingMessageId(null);
+      })
+      .catch(console.error);
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -115,11 +128,9 @@ const ChatWidget = ({ demoUser }) => {
   return (
     <>
       <button
+        className={`chat-widget-btn ${isOpen ? 'chat-open' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
         style={{
-          position: 'fixed',
-          bottom: '2rem',
-          right: '2rem',
           width: '60px',
           height: '60px',
           borderRadius: '50%',
@@ -131,7 +142,6 @@ const ChatWidget = ({ demoUser }) => {
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          zIndex: 1000,
           transform: isOpen ? 'scale(0.9)' : 'scale(1)',
           transition: 'transform 0.2s',
         }}
@@ -161,12 +171,7 @@ const ChatWidget = ({ demoUser }) => {
       </button>
 
       {isOpen && (
-        <div style={{
-          position: 'fixed',
-          bottom: '5.5rem',
-          right: '2rem',
-          width: '380px',
-          height: '540px',
+        <div className="chat-widget-window" style={{
           background: 'white',
           borderRadius: '18px',
           border: '1px solid #e2e8f0',
@@ -174,7 +179,6 @@ const ChatWidget = ({ demoUser }) => {
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          zIndex: 999,
           animation: 'fadeIn 0.2s ease forwards',
         }}>
           <div style={{
@@ -189,10 +193,13 @@ const ChatWidget = ({ demoUser }) => {
             <MessageCircle size={20} />
             <span style={{ fontWeight: '700' }}>Community Chat</span>
             {selectedUser && (
-              <span style={{ marginLeft: 'auto', fontSize: '0.85rem', opacity: 0.9 }}>
+              <span style={{ marginLeft: 'auto', marginRight: '0.5rem', fontSize: '0.85rem', opacity: 0.9 }}>
                 {selectedUser.first_name} {selectedUser.last_name}
               </span>
             )}
+            <button className="chat-mobile-close" onClick={() => setIsOpen(false)} style={!selectedUser ? { marginLeft: 'auto' } : {}}>
+              <X size={20} />
+            </button>
           </div>
 
           <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
@@ -274,36 +281,48 @@ const ChatWidget = ({ demoUser }) => {
                           maxWidth: '82%',
                           display: 'flex',
                           flexDirection: 'column',
-                          gap: '2px'
+                          gap: '2px',
+                          position: 'relative'
                         }}>
                           <div style={{
-                            background: isMe ? 'linear-gradient(135deg, #10B981, #059669)' : '#f1f5f9',
-                            color: isMe ? 'white' : '#1e293b',
+                            background: m.deleted_for_everyone ? 'transparent' : (isMe ? 'linear-gradient(135deg, #10B981, #059669)' : '#f1f5f9'),
+                            color: m.deleted_for_everyone ? '#94a3b8' : (isMe ? 'white' : '#1e293b'),
                             padding: '0.55rem 0.85rem',
                             borderRadius: '14px',
                             borderBottomRightRadius: isMe ? '3px' : '14px',
                             borderBottomLeftRadius: isMe ? '14px' : '3px',
+                            border: m.deleted_for_everyone ? '1px dashed #cbd5e1' : 'none',
                             fontSize: '0.88rem',
                             lineHeight: '1.45',
-                            wordBreak: 'break-word'
+                            wordBreak: 'break-word',
+                            fontStyle: m.deleted_for_everyone ? 'italic' : 'normal'
                           }}>
-                            {m.attachment && (
-                              <div style={{ marginBottom: m.content ? '0.5rem' : '0' }}>
-                                {m.attachment.match(/\.(jpeg|jpg|gif|png)$/i) ? (
-                                  <a href={m.attachment} target="_blank" rel="noopener noreferrer">
-                                    <img src={m.attachment} alt="attachment" style={{ maxWidth: '100%', borderRadius: '8px', maxHeight: '150px', objectFit: 'cover' }} />
-                                  </a>
-                                ) : (
-                                  <a href={m.attachment} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none', background: 'rgba(0,0,0,0.05)', padding: '6px 10px', borderRadius: '8px', maxWidth: '100%' }}>
-                                    <FileText size={16} style={{ flexShrink: 0 }} />
-                                    <span style={{ fontSize: '0.8rem', textDecoration: 'underline', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                      {decodeURIComponent(m.attachment.split('/').pop().split('?')[0])}
-                                    </span>
-                                  </a>
-                                )}
+                            {m.deleted_for_everyone ? (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <Ban size={14} />
+                                <span>This message was deleted</span>
                               </div>
+                            ) : (
+                              <>
+                                {m.attachment && (
+                                  <div style={{ marginBottom: m.content ? '0.5rem' : '0' }}>
+                                    {m.attachment.match(/\.(jpeg|jpg|gif|png)$/i) ? (
+                                      <a href={m.attachment} target="_blank" rel="noopener noreferrer">
+                                        <img src={m.attachment} alt="attachment" style={{ maxWidth: '100%', borderRadius: '8px', maxHeight: '150px', objectFit: 'cover' }} />
+                                      </a>
+                                    ) : (
+                                      <a href={m.attachment} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none', background: 'rgba(0,0,0,0.05)', padding: '6px 10px', borderRadius: '8px', maxWidth: '100%' }}>
+                                        <FileText size={16} style={{ flexShrink: 0 }} />
+                                        <span style={{ fontSize: '0.8rem', textDecoration: 'underline', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                          {decodeURIComponent(m.attachment.split('/').pop().split('?')[0])}
+                                        </span>
+                                      </a>
+                                    )}
+                                  </div>
+                                )}
+                                {m.content && <div>{m.content}</div>}
+                              </>
                             )}
-                            {m.content && <div>{m.content}</div>}
                           </div>
                           <div style={{
                             fontSize: '0.68rem',
@@ -317,7 +336,42 @@ const ChatWidget = ({ demoUser }) => {
                             {isMe && (
                               isRead ? <CheckCheck size={13} color="#10B981" /> : <Check size={13} color="#94a3b8" />
                             )}
+                            <button 
+                              onClick={() => setDeletingMessageId(deletingMessageId === m.id ? null : m.id)}
+                              style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', marginLeft: '4px', padding: 0, display: 'flex', alignItems: 'center' }}
+                            >
+                              <Trash2 size={12} />
+                            </button>
                           </div>
+
+                          {deletingMessageId === m.id && (
+                            <div style={{
+                              position: 'absolute',
+                              background: 'white',
+                              border: '1px solid #e2e8f0',
+                              borderRadius: '8px',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                              padding: '4px',
+                              zIndex: 10,
+                              top: '100%',
+                              marginTop: '4px',
+                              right: isMe ? '0' : 'auto',
+                              left: isMe ? 'auto' : '0',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '2px',
+                              minWidth: '130px'
+                            }}>
+                              <button onClick={() => handleDeleteMessage(m.id, 'me')} style={{ textAlign: 'left', padding: '8px 10px', background: 'none', border: 'none', fontSize: '0.75rem', cursor: 'pointer', borderRadius: '4px', color: '#1e293b' }} onMouseEnter={e => e.currentTarget.style.background='#f1f5f9'} onMouseLeave={e => e.currentTarget.style.background='none'}>
+                                Delete for me
+                              </button>
+                              {isMe && (
+                                <button onClick={() => handleDeleteMessage(m.id, 'everyone')} style={{ textAlign: 'left', padding: '8px 10px', background: 'none', border: 'none', fontSize: '0.75rem', cursor: 'pointer', borderRadius: '4px', color: '#ef4444' }} onMouseEnter={e => e.currentTarget.style.background='#fee2e2'} onMouseLeave={e => e.currentTarget.style.background='none'}>
+                                  Delete for everyone
+                                </button>
+                              )}
+                            </div>
+                          )}
                         </div>
                       );
                     })

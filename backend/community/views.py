@@ -118,3 +118,33 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Message.objects.all().order_by('timestamp')
+
+    @action(detail=True, methods=['post'], url_path='delete_message')
+    def delete_message(self, request, pk=None):
+        message = self.get_object()
+        user_id = request.data.get('user_id')
+        delete_type = request.data.get('type') # 'me' or 'everyone'
+
+        if not user_id:
+            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if delete_type == 'everyone':
+            if message.sender.id == user_id:
+                message.deleted_for_everyone = True
+                message.save()
+                return Response({"status": "deleted for everyone"})
+            else:
+                return Response({"error": "Only the sender can delete a message for everyone."}, status=status.HTTP_403_FORBIDDEN)
+        
+        elif delete_type == 'me':
+            if message.sender.id == user_id:
+                message.deleted_by_sender = True
+            elif message.receiver.id == user_id:
+                message.deleted_by_receiver = True
+            else:
+                return Response({"error": "You are not a participant in this message."}, status=status.HTTP_403_FORBIDDEN)
+            
+            message.save()
+            return Response({"status": "deleted for me"})
+            
+        return Response({"error": "Invalid delete type"}, status=status.HTTP_400_BAD_REQUEST)
