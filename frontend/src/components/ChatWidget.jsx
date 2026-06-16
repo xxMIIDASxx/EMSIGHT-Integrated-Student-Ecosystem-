@@ -12,9 +12,16 @@ const ChatWidget = ({ demoUser }) => {
   const [seenIds, setSeenIds] = useState(new Set());
   const [deletingMessageId, setDeletingMessageId] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const textareaRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const fetchUsers = () => {
     api.get('/accounts/users/')
@@ -196,7 +203,7 @@ const ChatWidget = ({ demoUser }) => {
             color: 'white',
             flexShrink: 0
           }}>
-            {!isExpanded && selectedUser ? (
+            {(!isExpanded || isMobile) && selectedUser ? (
               <button onClick={() => setSelectedUser(null)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 0 }}>
                 <ArrowLeft size={20} />
               </button>
@@ -210,9 +217,11 @@ const ChatWidget = ({ demoUser }) => {
               </span>
             )}
             <div style={{ marginLeft: !selectedUser ? 'auto' : '0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <button className="chat-mobile-close" onClick={() => setIsExpanded(!isExpanded)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {isExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
-              </button>
+              {!isMobile && (
+                <button className="chat-mobile-close" onClick={() => setIsExpanded(!isExpanded)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {isExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                </button>
+              )}
               <button className="chat-mobile-close" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <X size={20} />
               </button>
@@ -221,9 +230,9 @@ const ChatWidget = ({ demoUser }) => {
 
           <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
             <div style={{
-              width: selectedUser ? (isExpanded ? '70px' : '0px') : '100%',
+              width: selectedUser ? (isMobile ? '0px' : (isExpanded ? '70px' : '0px')) : '100%',
               background: '#f8fafc',
-              borderRight: (selectedUser && !isExpanded) ? 'none' : '1px solid #e2e8f0',
+              borderRight: (selectedUser && !isExpanded && !isMobile) ? 'none' : '1px solid #e2e8f0',
               overflowY: 'auto',
               overflowX: 'hidden',
               transition: 'width 0.25s ease',
