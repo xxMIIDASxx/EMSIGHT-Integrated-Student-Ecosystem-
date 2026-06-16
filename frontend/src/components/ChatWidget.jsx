@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Check, CheckCheck } from 'lucide-react';
+import { MessageCircle, X, Send, Check, CheckCheck, Paperclip, FileText, Image as ImageIcon } from 'lucide-react';
 import api from '../api';
 
 const ChatWidget = ({ demoUser }) => {
@@ -8,8 +8,10 @@ const ChatWidget = ({ demoUser }) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [attachment, setAttachment] = useState(null);
   const [seenIds, setSeenIds] = useState(new Set());
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const fetchUsers = () => {
     api.get('/accounts/users/')
@@ -73,14 +75,23 @@ const ChatWidget = ({ demoUser }) => {
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (!selectedUser || !newMessage.trim() || !demoUser) return;
+    if (!selectedUser || (!newMessage.trim() && !attachment) || !demoUser) return;
 
-    api.post('/community/messages/', {
-      sender_id: demoUser.id,
-      receiver_id: selectedUser.id,
-      content: newMessage
-    }).then(() => {
+    const formData = new FormData();
+    formData.append('sender_id', demoUser.id);
+    formData.append('receiver_id', selectedUser.id);
+    if (newMessage.trim()) {
+      formData.append('content', newMessage);
+    }
+    if (attachment) {
+      formData.append('attachment', attachment);
+    }
+
+    // Since we are sending FormData, Axios will automatically set the Content-Type to multipart/form-data
+    api.post('/community/messages/', formData).then(() => {
       setNewMessage('');
+      setAttachment(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
       fetchMessages();
     }).catch(err => {
       console.error(err);
@@ -276,7 +287,21 @@ const ChatWidget = ({ demoUser }) => {
                             lineHeight: '1.45',
                             wordBreak: 'break-word'
                           }}>
-                            {m.content}
+                            {m.attachment && (
+                              <div style={{ marginBottom: m.content ? '0.5rem' : '0' }}>
+                                {m.attachment.match(/\.(jpeg|jpg|gif|png)$/i) ? (
+                                  <a href={m.attachment} target="_blank" rel="noopener noreferrer">
+                                    <img src={m.attachment} alt="attachment" style={{ maxWidth: '100%', borderRadius: '8px', maxHeight: '150px', objectFit: 'cover' }} />
+                                  </a>
+                                ) : (
+                                  <a href={m.attachment} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'inherit', textDecoration: 'none', background: 'rgba(0,0,0,0.05)', padding: '6px 10px', borderRadius: '8px' }}>
+                                    <FileText size={16} />
+                                    <span style={{ fontSize: '0.8rem', textDecoration: 'underline' }}>View Document</span>
+                                  </a>
+                                )}
+                              </div>
+                            )}
+                            {m.content && <div>{m.content}</div>}
                           </div>
                           <div style={{
                             fontSize: '0.68rem',
@@ -297,50 +322,77 @@ const ChatWidget = ({ demoUser }) => {
                   )}
                   <div ref={messagesEndRef} />
                 </div>
-                <form onSubmit={handleSendMessage} style={{
-                  padding: '0.75rem',
-                  borderTop: '1px solid #e2e8f0',
-                  display: 'flex',
-                  gap: '0.5rem',
-                  flexShrink: 0
-                }}>
-                  <input
-                    type="text"
-                    value={newMessage}
-                    onChange={e => setNewMessage(e.target.value)}
-                    placeholder={`Message ${selectedUser.first_name}...`}
-                    style={{
-                      flex: 1,
-                      padding: '0.5rem 0.875rem',
-                      borderRadius: '20px',
-                      border: '1.5px solid #e2e8f0',
-                      fontSize: '0.88rem',
-                      outline: 'none',
-                      transition: 'border-color 0.2s'
-                    }}
-                    onFocus={e => e.target.style.borderColor = '#10B981'}
-                    onBlur={e => e.target.style.borderColor = '#e2e8f0'}
-                  />
-                  <button
-                    type="submit"
-                    disabled={!newMessage.trim()}
-                    style={{
-                      width: '38px',
-                      height: '38px',
-                      borderRadius: '50%',
-                      background: newMessage.trim() ? 'linear-gradient(135deg, #10B981, #059669)' : '#e2e8f0',
-                      color: 'white',
-                      border: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: newMessage.trim() ? 'pointer' : 'not-allowed',
-                      transition: 'background 0.2s, transform 0.15s'
-                    }}
-                  >
-                    <Send size={16} style={{ marginLeft: '-2px', marginTop: '2px' }} />
-                  </button>
-                </form>
+                <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid #e2e8f0', background: 'white', flexShrink: 0 }}>
+                  {attachment && (
+                    <div style={{ padding: '0.4rem 0.75rem', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: '#64748b' }}>
+                      <Paperclip size={14} />
+                      <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{attachment.name}</span>
+                      <button type="button" onClick={() => setAttachment(null)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                        <X size={14} />
+                      </button>
+                    </div>
+                  )}
+                  <form onSubmit={handleSendMessage} style={{
+                    padding: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      onChange={e => setAttachment(e.target.files[0])}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      style={{
+                        background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.4rem', borderRadius: '50%', transition: 'background 0.2s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = '#f1f5f9'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                    >
+                      <Paperclip size={18} />
+                    </button>
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={e => setNewMessage(e.target.value)}
+                      placeholder={`Message ${selectedUser.first_name}...`}
+                      style={{
+                        flex: 1,
+                        padding: '0.5rem 0.875rem',
+                        borderRadius: '20px',
+                        border: '1.5px solid #e2e8f0',
+                        fontSize: '0.88rem',
+                        outline: 'none',
+                        transition: 'border-color 0.2s'
+                      }}
+                      onFocus={e => e.target.style.borderColor = '#10B981'}
+                      onBlur={e => e.target.style.borderColor = '#e2e8f0'}
+                    />
+                    <button
+                      type="submit"
+                      disabled={!newMessage.trim() && !attachment}
+                      style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '50%',
+                        background: (newMessage.trim() || attachment) ? 'linear-gradient(135deg, #10B981, #059669)' : '#e2e8f0',
+                        color: 'white',
+                        border: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: (newMessage.trim() || attachment) ? 'pointer' : 'not-allowed',
+                        transition: 'background 0.2s, transform 0.15s'
+                      }}
+                    >
+                      <Send size={16} style={{ marginLeft: '-2px', marginTop: '2px' }} />
+                    </button>
+                  </form>
+                </div>
               </div>
             ) : (
               <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.9rem' }}>

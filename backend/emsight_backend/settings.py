@@ -180,7 +180,7 @@ if not os.environ.get('CLOUDINARY_URL'):
 
 STORAGES = {
     "default": {
-        "BACKEND": "emsight_backend.storage.SignedRawMediaCloudinaryStorage",
+        "BACKEND": "cloudinary_storage.storage.RawMediaCloudinaryStorage",
     },
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",

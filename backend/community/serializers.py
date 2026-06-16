@@ -54,7 +54,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['id', 'sender', 'sender_id', 'receiver', 'receiver_id', 'content', 'timestamp', 'is_read']
+        fields = ['id', 'sender', 'sender_id', 'receiver', 'receiver_id', 'content', 'attachment', 'timestamp', 'is_read']
         read_only_fields = ['receiver']
 
     def create(self, validated_data):
@@ -63,6 +63,7 @@ class MessageSerializer(serializers.ModelSerializer):
         message = Message.objects.create(
             receiver_id=receiver_id,
             sender_id=sender_id,
-            content=validated_data.get('content', '')
+            content=validated_data.get('content', ''),
+            attachment=validated_data.get('attachment', None)
         )
         return message
