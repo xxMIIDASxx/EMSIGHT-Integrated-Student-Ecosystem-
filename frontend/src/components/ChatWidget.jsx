@@ -23,7 +23,12 @@ const ChatWidget = ({ demoUser }) => {
   const fetchMessages = () => {
     api.get('/community/messages/')
       .then(res => setMessages(res.data))
-      .catch(console.error);
+      .catch(err => {
+        console.error(err);
+        if (err.response?.status === 500) {
+          alert('Database error! Please make sure you have visited /api/run-migrations/ in your browser to create the Message table.');
+        }
+      });
   };
 
   useEffect(() => {
@@ -77,7 +82,10 @@ const ChatWidget = ({ demoUser }) => {
     }).then(() => {
       setNewMessage('');
       fetchMessages();
-    }).catch(console.error);
+    }).catch(err => {
+      console.error(err);
+      alert('Error sending message: ' + (err.response?.data?.error || err.message));
+    });
   };
 
   const unreadCount = (userId) =>
