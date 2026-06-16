@@ -753,9 +753,10 @@ tbody tr:hover {
   .chat-widget-window {
     bottom: 0 !important;
     right: 0 !important;
+    top: 60px !important;
     width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
+    height: auto !important;
+    max-height: none !important;
     border-radius: 0 !important;
     border: none !important;
     z-index: 1001 !important;
@@ -775,5 +776,81 @@ tbody tr:hover {
     display: flex !important;
     align-items: center;
     justify-content: center;
+  }
+}
+
+/* Community Feed Responsiveness */
+.post-create-card {
+  padding: 1.5rem;
+}
+
+.post-form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.post-card {
+  padding: 1.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-right: 4rem; /* Space for absolute actions */
+}
+
+.post-actions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.post-author-name {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .post-create-card,
+  .post-card {
+    padding: 1rem;
+  }
+  
+  .post-form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .post-form-footer button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .post-header {
+    padding-right: 0;
+  }
+
+  .post-header img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .post-actions {
+    position: static;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem;
   }
 }

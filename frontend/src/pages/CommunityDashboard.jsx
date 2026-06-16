@@ -199,7 +199,7 @@ function CommunityDashboard({ activeTab, demoUser }) {
 
   const renderFeed = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '800px', margin: '0 auto' }}>
-      <div className="glass-panel" style={{ padding: '1.5rem' }}>
+      <div className="glass-panel post-create-card">
         <h3 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <MessageSquare size={20} /> Create a Post
         </h3>
@@ -212,7 +212,7 @@ function CommunityDashboard({ activeTab, demoUser }) {
             onChange={(e) => setNewPostContent(e.target.value)}
             style={{ resize: 'none', marginBottom: '1rem' }}
           />
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="post-form-footer">
             <input 
               id="post-media-input"
               type="file" 
@@ -228,10 +228,10 @@ function CommunityDashboard({ activeTab, demoUser }) {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {posts.map(post => (
-          <div key={post.id} className="glass-panel" style={{ padding: '1.5rem', position: 'relative' }}>
+          <div key={post.id} className="glass-panel post-card">
             {/* Action buttons for author, admin, or teacher */}
             {(post.author_detail?.id === demoUser?.id || demoUser?.role === 'admin' || demoUser?.role === 'teacher') && editingPostId !== post.id && (
-              <div style={{ position: 'absolute', top: '1rem', right: '1rem', display: 'flex', gap: '0.5rem' }}>
+              <div className="post-actions">
                 {demoUser?.role === 'teacher' && (
                   <button onClick={() => handleToggleValidate(post.id)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: post.validators?.some(v => v.id === demoUser.id) ? 'var(--success)' : 'var(--text-muted)' }} title={post.validators?.some(v => v.id === demoUser.id) ? "Devalidate Post" : "Validate Post"}>
                     <BadgeCheck size={18} fill={post.validators?.some(v => v.id === demoUser.id) ? "var(--success)" : "none"} color={post.validators?.some(v => v.id === demoUser.id) ? "white" : "currentColor"} />
@@ -250,14 +250,14 @@ function CommunityDashboard({ activeTab, demoUser }) {
               </div>
             )}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+            <div className="post-header">
               <img 
                 src={getProfilePicUrl(post.author_detail?.profile_picture) || `https://api.dicebear.com/7.x/initials/svg?seed=${post.author_detail?.first_name || 'U'}`} 
                 alt="Profile" 
                 style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} 
               />
               <div>
-                <p style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <p className="post-author-name">
                   {post.author_detail?.first_name} {post.author_detail?.last_name}
                   {post.author_detail?.role === 'admin' && (
                     <span style={{ background: 'var(--danger)', color: 'white', padding: '0.1rem 0.4rem', borderRadius: 'var(--radius-sm)', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.1rem' }}>
