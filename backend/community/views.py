@@ -1,8 +1,8 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Post, Event, JobOffer, CVAnalysis
-from .serializers import PostSerializer, EventSerializer, JobOfferSerializer, CVAnalysisSerializer
+from .models import Post, Event, JobOffer, CVAnalysis, Message
+from .serializers import PostSerializer, EventSerializer, JobOfferSerializer, CVAnalysisSerializer, MessageSerializer
 from .ai_service import analyze_cv
 from accounts.models import CustomUser
 
@@ -112,3 +112,9 @@ class CVAnalysisViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(analysis)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class MessageViewSet(viewsets.ModelViewSet):
+    serializer_class = MessageSerializer
+
+    def get_queryset(self):
+        return Message.objects.all().order_by('timestamp')

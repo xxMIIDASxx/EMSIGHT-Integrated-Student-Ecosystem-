@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Event, JobOffer, CVAnalysis
+from .models import Post, Event, JobOffer, CVAnalysis, Message
 from accounts.models import CustomUser
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -46,3 +46,23 @@ class CVAnalysisSerializer(serializers.ModelSerializer):
         model = CVAnalysis
         fields = ['id', 'user', 'user_detail', 'job_offer', 'job_offer_detail', 'cv_name', 'cv_text', 'score', 'suggestions', 'created_at']
         read_only_fields = ['user', 'score', 'suggestions']
+
+class MessageSerializer(serializers.ModelSerializer):
+    sender = AuthorSerializer(read_only=True)
+    sender_id = serializers.IntegerField(write_only=True, required=False)
+    receiver_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Message
+        fields = ['id', 'sender', 'sender_id', 'receiver', 'receiver_id', 'content', 'timestamp', 'is_read']
+        read_only_fields = ['receiver']
+
+    def create(self, validated_data):
+        receiver_id = validated_data.pop('receiver_id')
+        sender_id = validated_data.pop('sender_id', None)
+        message = Message.objects.create(
+            receiver_id=receiver_id,
+            sender_id=sender_id,
+            content=validated_data.get('content', '')
+        )
+        return message

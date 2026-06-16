@@ -8,6 +8,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import CommunityDashboard from './pages/CommunityDashboard';
 import ShareDashboard from './pages/ShareDashboard';
 import Login from './pages/Login';
+import ChatWidget from './components/ChatWidget';
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -127,6 +128,10 @@ function App() {
           {renderContent()}
         </div>
       </main>
+
+      {currentPlatform === 'community' && (
+        <ChatWidget demoUser={user} />
+      )}
     </div>
   );
 }

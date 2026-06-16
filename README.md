@@ -16,7 +16,7 @@ cd backend
 if (Test-Path venv) { Remove-Item -Recurse -Force venv }
 
 python -m venv venv
-venv\Scripts\activate
+.\venv\Scripts\Activate.ps1
 
 python -m pip install --upgrade pip
 pip install -r requirements.txt
