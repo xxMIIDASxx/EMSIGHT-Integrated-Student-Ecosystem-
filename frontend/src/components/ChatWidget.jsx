@@ -13,6 +13,7 @@ const ChatWidget = ({ demoUser }) => {
   const [deletingMessageId, setDeletingMessageId] = useState(null);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const textareaRef = useRef(null);
 
   const fetchUsers = () => {
     api.get('/accounts/users/')
@@ -105,6 +106,7 @@ const ChatWidget = ({ demoUser }) => {
       setNewMessage('');
       setAttachment(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
+      if (textareaRef.current) textareaRef.current.style.height = 'auto';
       fetchMessages();
     }).catch(err => {
       console.error(err);
@@ -391,7 +393,7 @@ const ChatWidget = ({ demoUser }) => {
                   <form onSubmit={handleSendMessage} style={{
                     padding: '0.75rem',
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-end',
                     gap: '0.5rem'
                   }}>
                     <input
@@ -404,26 +406,44 @@ const ChatWidget = ({ demoUser }) => {
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       style={{
-                        background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.4rem', borderRadius: '50%', transition: 'background 0.2s'
+                        background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.4rem', borderRadius: '50%', transition: 'background 0.2s', marginBottom: '4px'
                       }}
                       onMouseEnter={e => e.currentTarget.style.background = '#f1f5f9'}
                       onMouseLeave={e => e.currentTarget.style.background = 'none'}
                     >
                       <Paperclip size={18} />
                     </button>
-                    <input
-                      type="text"
+                    <textarea
+                      ref={textareaRef}
                       value={newMessage}
-                      onChange={e => setNewMessage(e.target.value)}
+                      onChange={e => {
+                        setNewMessage(e.target.value);
+                        e.target.style.height = 'auto';
+                        e.target.style.height = (e.target.scrollHeight) + 'px';
+                      }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendMessage(e);
+                        }
+                      }}
                       placeholder={`Message ${selectedUser.first_name}...`}
+                      rows={1}
                       style={{
                         flex: 1,
-                        padding: '0.5rem 0.875rem',
-                        borderRadius: '20px',
+                        padding: '0.55rem 0.875rem',
+                        borderRadius: '16px',
                         border: '1.5px solid #e2e8f0',
                         fontSize: '0.88rem',
                         outline: 'none',
-                        transition: 'border-color 0.2s'
+                        resize: 'none',
+                        fontFamily: 'inherit',
+                        lineHeight: '1.4',
+                        maxHeight: '120px',
+                        overflowY: 'auto',
+                        minHeight: '38px',
+                        transition: 'border-color 0.2s',
+                        boxSizing: 'border-box'
                       }}
                       onFocus={e => e.target.style.borderColor = '#10B981'}
                       onBlur={e => e.target.style.borderColor = '#e2e8f0'}
@@ -442,7 +462,9 @@ const ChatWidget = ({ demoUser }) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         cursor: (newMessage.trim() || attachment) ? 'pointer' : 'not-allowed',
-                        transition: 'background 0.2s, transform 0.15s'
+                        transition: 'background 0.2s, transform 0.15s',
+                        flexShrink: 0,
+                        marginBottom: '4px'
                       }}
                     >
                       <Send size={16} style={{ marginLeft: '-2px', marginTop: '2px' }} />
