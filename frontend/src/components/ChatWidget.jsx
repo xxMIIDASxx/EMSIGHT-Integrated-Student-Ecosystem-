@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Check, CheckCheck, Paperclip, FileText, Image as ImageIcon, Trash2, Ban } from 'lucide-react';
+import { MessageCircle, X, Send, Check, CheckCheck, Paperclip, FileText, Image as ImageIcon, Trash2, Ban, Maximize2, Minimize2 } from 'lucide-react';
 import api from '../api';
 
 const ChatWidget = ({ demoUser }) => {
@@ -11,6 +11,7 @@ const ChatWidget = ({ demoUser }) => {
   const [attachment, setAttachment] = useState(null);
   const [seenIds, setSeenIds] = useState(new Set());
   const [deletingMessageId, setDeletingMessageId] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const textareaRef = useRef(null);
@@ -174,6 +175,9 @@ const ChatWidget = ({ demoUser }) => {
 
       {isOpen && (
         <div className="chat-widget-window" style={{
+          width: isExpanded ? 'min(90vw, 900px)' : '380px',
+          height: isExpanded ? 'min(85vh, 700px)' : '540px',
+          maxHeight: 'calc(100vh - 120px)',
           background: 'white',
           borderRadius: '18px',
           border: '1px solid #e2e8f0',
@@ -199,9 +203,14 @@ const ChatWidget = ({ demoUser }) => {
                 {selectedUser.first_name} {selectedUser.last_name}
               </span>
             )}
-            <button className="chat-mobile-close" onClick={() => setIsOpen(false)} style={!selectedUser ? { marginLeft: 'auto' } : {}}>
-              <X size={20} />
-            </button>
+            <div style={{ marginLeft: !selectedUser ? 'auto' : '0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button className="chat-mobile-close" onClick={() => setIsExpanded(!isExpanded)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {isExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+              </button>
+              <button className="chat-mobile-close" onClick={() => setIsOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <X size={20} />
+              </button>
+            </div>
           </div>
 
           <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>

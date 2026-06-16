@@ -729,15 +729,8 @@ tbody tr:hover {
   position: fixed;
   bottom: 5.5rem;
   right: 2rem;
-  width: 380px;
-  height: 540px;
-  max-height: calc(100vh - 120px);
   z-index: 999;
-  resize: both;
-  overflow: hidden;
-  min-width: 300px;
-  max-width: 90vw;
-  min-height: 400px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .chat-widget-btn {
