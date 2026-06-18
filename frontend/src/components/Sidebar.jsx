@@ -110,9 +110,12 @@ function Sidebar({ user, currentRole, activeTab, setActiveTab, currentPlatform, 
       }}>
         <p style={{ fontWeight: 600, marginBottom: '0.4rem', color: 'var(--text-main)' }}>PFA EMSIGHT</p>
         <p style={{ marginBottom: '0.5rem' }}>
-          Made by : Amjad AHRRAR, Hajar CHABLI,<br />
-          Nizar BTIRA, Nizar EL IDRYSY,<br />
-          Owais BAKKALI.
+          Made by :{' '}
+          <a href="#" target="_blank" rel="noopener noreferrer" className="author-link">Amjad AHRRAR</a>,{' '}
+          <a href="#" target="_blank" rel="noopener noreferrer" className="author-link">Hajar CHABLI</a>,<br />
+          <a href="https://github.com/BtiraNizar" target="_blank" rel="noopener noreferrer" className="author-link">Nizar BTIRA</a>,{' '}
+          <a href="https://www.linkedin.com/in/nizarelidrysy?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" className="author-link">Nizar EL IDRYSY</a>,<br />
+          <a href="https://github.com/xxMIIDASxx" target="_blank" rel="noopener noreferrer" className="author-link">Owais BAKKALI</a>.
         </p>
         <p style={{ borderTop: '1px solid var(--border)', paddingTop: '0.5rem', fontSize: '0.68rem' }}>
           EMSIGHT © 2026. All rights reserved.

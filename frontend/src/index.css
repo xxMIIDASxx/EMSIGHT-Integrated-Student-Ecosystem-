@@ -842,8 +842,7 @@ tbody tr:hover {
   .post-header {
     padding-right: 0;
   }
-
-  .post-header img {
+  .post-header img {
     width: 32px !important;
     height: 32px !important;
   }
@@ -853,4 +852,17 @@ tbody tr:hover {
     justify-content: flex-end;
     margin-bottom: 0.5rem;
   }
+}
+
+.author-link {
+  color: inherit !important;
+  text-decoration: underline !important;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.author-link:hover {
+  color: var(--primary) !important;
+  background-color: rgba(16, 185, 129, 0.1);
+  text-decoration: none !important;
 }
