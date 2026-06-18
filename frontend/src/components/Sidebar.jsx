@@ -39,7 +39,7 @@ function Sidebar({ user, currentRole, activeTab, setActiveTab, currentPlatform, 
         { id: 'events', label: 'Events', icon: <Calendar className="nav-icon" /> },
         { id: 'jobs', label: 'Job Offers', icon: <Briefcase className="nav-icon" /> },
         { id: 'cvanalyzer', label: 'CV Analyzer', icon: <FileCheck className="nav-icon" /> },
-      ]
+      ].filter(item => !(currentRole === 'teacher' && item.id === 'jobs'))
     : currentPlatform === 'share'
       ? user?.role === 'admin'
         ? [

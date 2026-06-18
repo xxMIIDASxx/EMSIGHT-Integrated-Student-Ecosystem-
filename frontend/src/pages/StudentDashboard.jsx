@@ -25,8 +25,21 @@ function StudentDashboard({ activeTab, demoUser }) {
     if (demoUser?.student_profile?.filiere) {
       api.get(`/portal/schedules/?target_class=${demoUser.student_profile.filiere}`).then(res => {
         if (res.data.length > 0) {
-          const data = res.data[0].schedule_data;
-          setStudentSchedule(Array.isArray(data) && data.length === 5 ? data : [[], [], [], [], []]);
+          let data = res.data[0].schedule_data;
+          if (Array.isArray(data) && data.length === 5) {
+            data = data.map(daySlots => {
+              return Array.isArray(daySlots) ? [...daySlots].sort((a, b) => {
+                const getMins = t => {
+                  const [h, m] = (t || '').split('-')[0].trim().split(':');
+                  return parseInt(h || 0) * 60 + parseInt(m || 0);
+                };
+                return getMins(a.time) - getMins(b.time);
+              }) : [];
+            });
+            setStudentSchedule(data);
+          } else {
+            setStudentSchedule([[], [], [], [], []]);
+          }
         }
       }).catch(() => {});
     }

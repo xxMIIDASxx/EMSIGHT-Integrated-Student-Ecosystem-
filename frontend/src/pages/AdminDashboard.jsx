@@ -62,8 +62,21 @@ function AdminDashboard({ activeTab, demoUser }) {
       api.get(`/portal/schedules/?target_class=${selectedClassForTimetable}`).then(res => {
         if (res.data.length > 0) {
           setTimetableId(res.data[0].id);
-          const data = res.data[0].schedule_data;
-          setTimetableData(Array.isArray(data) && data.length === 5 ? data : [[], [], [], [], []]);
+          let data = res.data[0].schedule_data;
+          if (Array.isArray(data) && data.length === 5) {
+            data = data.map(daySlots => {
+              return Array.isArray(daySlots) ? [...daySlots].sort((a, b) => {
+                const getMins = t => {
+                  const [h, m] = (t || '').split('-')[0].trim().split(':');
+                  return parseInt(h || 0) * 60 + parseInt(m || 0);
+                };
+                return getMins(a.time) - getMins(b.time);
+              }) : [];
+            });
+            setTimetableData(data);
+          } else {
+            setTimetableData([[], [], [], [], []]);
+          }
         } else {
           setTimetableId(null);
           setTimetableData([[], [], [], [], []]);
@@ -174,7 +187,13 @@ function AdminDashboard({ activeTab, demoUser }) {
     setTimetableData(prev => {
       const updated = [...prev];
       updated[newSlot.dayIdx] = [...(updated[newSlot.dayIdx] || []), { time: newSlot.time, name: displayName }];
-      updated[newSlot.dayIdx].sort((a, b) => a.time.localeCompare(b.time));
+      updated[newSlot.dayIdx].sort((a, b) => {
+        const getMins = t => {
+          const [h, m] = (t || '').split('-')[0].trim().split(':');
+          return parseInt(h || 0) * 60 + parseInt(m || 0);
+        };
+        return getMins(a.time) - getMins(b.time);
+      });
       return updated;
     });
     setNewSlot({ dayIdx: 0, time: '', subject: '', teacher: '' });
