@@ -13,7 +13,6 @@ class Resource(models.Model):
     subject = models.CharField(max_length=120)
     description = models.TextField(blank=True)
     resource_type = models.CharField(max_length=40, choices=RESOURCE_TYPE_CHOICES)
-    file = models.FileField(upload_to="shared_resources/", max_length=500)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="shared_resources"
     )
@@ -29,6 +28,15 @@ class Resource(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.author_id}"
+
+
+class ResourceFile(models.Model):
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name="files")
+    file = models.FileField(upload_to="shared_resources/", max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"File for {self.resource.title}"
 
 
 class ResourceFavorite(models.Model):

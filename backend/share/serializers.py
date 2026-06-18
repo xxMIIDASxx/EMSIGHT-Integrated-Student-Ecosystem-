@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from accounts.models import CustomUser
-from .models import Resource, ResourceFavorite, ResourceReport
+from .models import Resource, ResourceFavorite, ResourceReport, ResourceFile
 
 
 class ShareUserSerializer(serializers.ModelSerializer):
@@ -9,9 +9,16 @@ class ShareUserSerializer(serializers.ModelSerializer):
         fields = ["id", "first_name", "last_name", "role", "profile_picture"]
 
 
+class ResourceFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResourceFile
+        fields = ["id", "file", "created_at"]
+
+
 class ResourceSerializer(serializers.ModelSerializer):
     author_detail = ShareUserSerializer(source="author", read_only=True)
     validators_detail = ShareUserSerializer(source="validated_by", many=True, read_only=True)
+    files = ResourceFileSerializer(many=True, read_only=True)
     is_validated = serializers.SerializerMethodField()
     report_count = serializers.IntegerField(read_only=True)
     is_favorited = serializers.BooleanField(read_only=True)
@@ -25,7 +32,7 @@ class ResourceSerializer(serializers.ModelSerializer):
             "subject",
             "description",
             "resource_type",
-            "file",
+            "files",
             "author",
             "author_detail",
             "is_validated",

@@ -18,9 +18,15 @@ function StudentDashboard({ activeTab, demoUser }) {
   useEffect(() => {
     api.get('/portal/calendar/').then(res => setCalendar(res.data));
     api.get('/portal/notifications/').then(res => setNotifications(res.data));
-    api.get('/portal/report-cards/').then(res => setReportCards(res.data));
-    api.get('/portal/absences/').then(res => setAbsences(res.data));
-    api.get('/portal/document-requests/').then(res => setDocumentRequests(res.data));
+    api.get('/portal/report-cards/').then(res => {
+      setReportCards(demoUser ? res.data.filter(rc => rc.student === demoUser.id || (rc.student_details && rc.student_details.id === demoUser.id)) : res.data);
+    });
+    api.get('/portal/absences/').then(res => {
+      setAbsences(demoUser ? res.data.filter(a => a.student === demoUser.id || (a.student_details && a.student_details.id === demoUser.id)) : res.data);
+    });
+    api.get('/portal/document-requests/').then(res => {
+      setDocumentRequests(demoUser ? res.data.filter(dr => dr.student === demoUser.id || (dr.student_details && dr.student_details.id === demoUser.id)) : res.data);
+    });
     
     if (demoUser?.student_profile?.filiere) {
       api.get(`/portal/schedules/?target_class=${demoUser.student_profile.filiere}`).then(res => {
@@ -321,20 +327,24 @@ function StudentDashboard({ activeTab, demoUser }) {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--surface)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
                               <p style={{ fontWeight: 600, margin: 0 }}>Average: <span style={{ color: rc.general_average >= 10 ? 'var(--success)' : 'var(--danger)', fontSize: '1.1rem' }}>{rc.general_average}/20</span></p>
                               <span style={{ padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)', background: rc.general_average >= 10 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: rc.general_average >= 10 ? 'var(--success)' : 'var(--danger)', fontWeight: 700, fontSize: '0.75rem' }}>
-                                {rc.general_average >= 10 ? '✓ Passed' : '✗ Failed'}
+                                {rc.general_average >= 10 ? '✓ Validée' : '✗ Rattrapage'}
                               </span>
                             </div>
                           </div>
                           <div className="table-container">
                             <table>
-                              <thead><tr><th>Subject</th><th>Type</th><th>Grade</th><th>Rattrapage</th></tr></thead>
+                              <thead><tr><th>Subject</th><th>Type</th><th>Grade</th><th>Status</th></tr></thead>
                               <tbody>
                                 {rc.grades.map(g => (
                                   <tr key={g.id}>
                                     <td>{formatSubject(g.subject)}</td>
                                     <td>{g.evaluation_type}</td>
                                     <td style={{ color: g.value >= 10 ? 'var(--success)' : 'var(--danger)', fontWeight: 600 }}>{g.value}/20</td>
-                                    <td>{g.is_rattrapage ? <span className="badge badge-warning">Yes</span> : 'No'}</td>
+                                    <td>
+                                      {(g.value >= 10 || rc.general_average >= 10)
+                                        ? <span className="badge badge-success">Validée</span> 
+                                        : <span className="badge badge-danger">Rattrapage</span>}
+                                    </td>
                                   </tr>
                                 ))}
                               </tbody>
@@ -369,19 +379,23 @@ function StudentDashboard({ activeTab, demoUser }) {
                         <p style={{ fontSize: '2rem', fontWeight: 700, color: activeRc.general_average >= 10 ? 'var(--success)' : 'var(--danger)' }}>{activeRc.general_average}<span style={{ fontSize: '1rem', fontWeight: 400 }}>/20</span></p>
                       </div>
                       <span style={{ marginLeft: 'auto', padding: '0.4rem 0.875rem', borderRadius: 'var(--radius-full)', background: activeRc.general_average >= 10 ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)', color: activeRc.general_average >= 10 ? 'var(--success)' : 'var(--danger)', fontWeight: 700, fontSize: '0.85rem' }}>
-                        {activeRc.general_average >= 10 ? '✓ Passed' : '✗ Failed'}
+                        {activeRc.general_average >= 10 ? '✓ Validée' : '✗ Rattrapage'}
                       </span>
                     </div>
                     <div className="table-container">
                       <table>
-                        <thead><tr><th>Subject</th><th>Type</th><th>Grade</th><th>Rattrapage</th></tr></thead>
+                        <thead><tr><th>Subject</th><th>Type</th><th>Grade</th><th>Status</th></tr></thead>
                         <tbody>
                           {activeRc.grades.map(g => (
                             <tr key={g.id}>
                               <td>{formatSubject(g.subject)}</td>
                               <td>{g.evaluation_type}</td>
                               <td style={{ color: g.value >= 10 ? 'var(--success)' : 'var(--danger)', fontWeight: 600 }}>{g.value}/20</td>
-                              <td>{g.is_rattrapage ? <span className="badge badge-warning">Yes</span> : 'No'}</td>
+                              <td>
+                                {(g.value >= 10 || activeRc.general_average >= 10)
+                                  ? <span className="badge badge-success">Validée</span> 
+                                  : <span className="badge badge-danger">Rattrapage</span>}
+                              </td>
                             </tr>
                           ))}
                         </tbody>

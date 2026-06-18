@@ -3,7 +3,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from accounts.models import CustomUser
-from .models import Resource, ResourceFavorite, ResourceReport
+from .models import Resource, ResourceFavorite, ResourceReport, ResourceFile
 from .serializers import ResourceSerializer
 
 
@@ -57,8 +57,13 @@ class ResourceViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(author=actor)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        resource = serializer.save(author=actor)
+
+        files = request.FILES.getlist("files")
+        for f in files:
+            ResourceFile.objects.create(resource=resource, file=f)
+
+        return Response(self.get_serializer(resource).data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         actor = self._get_actor()

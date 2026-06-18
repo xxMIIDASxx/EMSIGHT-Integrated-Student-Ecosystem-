@@ -112,7 +112,7 @@ function Sidebar({ user, currentRole, activeTab, setActiveTab, currentPlatform, 
         <p style={{ marginBottom: '0.5rem' }}>
           Made by :{' '}
           <a href="#" target="_blank" rel="noopener noreferrer" className="author-link">Amjad AHRRAR</a>,{' '}
-          <a href="#" target="_blank" rel="noopener noreferrer" className="author-link">Hajar CHABLI</a>,<br />
+          <a href="https://www.linkedin.com/in/hajarchabli?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" className="author-link">Hajar CHABLI</a>,<br />
           <a href="https://github.com/BtiraNizar" target="_blank" rel="noopener noreferrer" className="author-link">Nizar BTIRA</a>,{' '}
           <a href="https://www.linkedin.com/in/nizarelidrysy?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" className="author-link">Nizar EL IDRYSY</a>,<br />
           <a href="https://github.com/xxMIIDASxx" target="_blank" rel="noopener noreferrer" className="author-link">Owais BAKKALI</a>.

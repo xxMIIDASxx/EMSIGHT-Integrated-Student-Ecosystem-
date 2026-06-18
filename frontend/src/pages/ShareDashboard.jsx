@@ -20,7 +20,7 @@ function ShareDashboard({ activeTab, demoUser }) {
     subject: "",
     description: "",
     resource_type: "course",
-    file: null,
+    files: [],
   });
 
   const fetchResources = (onlyReported = false) => {
@@ -50,20 +50,24 @@ function ShareDashboard({ activeTab, demoUser }) {
 
   const handleUpload = (e) => {
     e.preventDefault();
-    if (!form.file) {
-      window.alert("Please select a PDF or DOC file.");
+    if (!form.files || form.files.length === 0) {
+      window.alert("Please select at least one PDF or DOC file.");
       return;
     }
+    
     const formData = new FormData();
     formData.append("user_id", demoUser.id);
     formData.append("title", form.title);
     formData.append("subject", form.subject);
     formData.append("description", form.description);
     formData.append("resource_type", form.resource_type);
-    formData.append("file", form.file);
+    for (let i = 0; i < form.files.length; i++) {
+      formData.append("files", form.files[i]);
+    }
+    
     api.post("/share/resources/", formData, { headers: { "Content-Type": "multipart/form-data" } }).then(() => {
       window.alert("Resource shared successfully!");
-      setForm({ title: "", subject: "", description: "", resource_type: "course", file: null });
+      setForm({ title: "", subject: "", description: "", resource_type: "course", files: [] });
       fetchResources(activeTab === "reported");
     }).catch(err => {
       console.error(err);
@@ -120,8 +124,8 @@ function ShareDashboard({ activeTab, demoUser }) {
                 </select>
               </div>
               <div className="input-group">
-                <label className="input-label">File (PDF or DOC)</label>
-                <input className="input-field" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(e) => setForm({ ...form, file: e.target.files?.[0] || null })} required />
+                <label className="input-label">Files (PDF or DOC)</label>
+                <input className="input-field" type="file" multiple accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(e) => setForm({ ...form, files: Array.from(e.target.files) || [] })} required />
               </div>
               <div className="input-group" style={{ gridColumn: "1 / -1" }}>
                 <label className="input-label">Description (optional)</label>
@@ -179,7 +183,11 @@ function ShareDashboard({ activeTab, demoUser }) {
                   </p>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", flex: "1 1 150px" }}>
-                  <a className="btn btn-secondary" href={r.file.startsWith("http") ? r.file : `${import.meta.env.PROD ? '' : 'http://127.0.0.1:8000'}${r.file}`} target="_blank" rel="noreferrer">Read</a>
+                  {r.files && r.files.map((f, i) => (
+                    <a key={f.id} className="btn btn-secondary" href={f.file.startsWith("http") ? f.file : `${import.meta.env.PROD ? '' : 'http://127.0.0.1:8000'}${f.file}`} target="_blank" rel="noreferrer">
+                      Read File {i + 1}
+                    </a>
+                  ))}
                   <button className="btn btn-secondary" onClick={() => handleFavorite(r.id)} style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
                     <Bookmark size={14} /> {r.is_favorited ? "Remove from list" : "Add to list"}
                   </button>
